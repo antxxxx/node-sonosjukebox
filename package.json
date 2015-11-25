@@ -4,13 +4,15 @@
   "description": "",
   "main": "app.js",
   "dependencies": {
+    "a127-magic": "^0.11.0",
     "express": "3.x.x",
-    "a127-magic": "^0.11.0"
+    "sonos": "^0.9.0",
+    "spotify-web-api-node": "^2.2.0"
   },
   "devDependencies": {
     "should": "4.4.x",
     "supertest": "0.15.x"
-  },  
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node app.js"
