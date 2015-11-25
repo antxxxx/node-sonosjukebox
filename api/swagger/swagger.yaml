@@ -1,58 +1,198 @@
 swagger: "2.0"
 info:
   version: "0.0.1"
-  title: Hello World App
+  title: SonosJukebox
 # during dev, should point to your local machine
 host: localhost:10010
 # basePath prefixes all resource paths 
-basePath: /
+basePath: /api
 # 
 schemes:
   # tip: remove http to make production-grade
   - http
-  - https
 # format of bodies a client can send (Content-Type)
 consumes:
   - application/json
 # format of the responses to the client (Accepts)
 produces:
   - application/json
-x-a127-config: {}
-x-a127-services: {}
 paths:
-  /hello:
-    # binds a127 app logic to a route
-    x-swagger-router-controller: hello_world
-    x-a127-apply: {}
+  /tracks:
+    x-swagger-router-controller: getAllTracks
     get:
-      description: Returns 'Hello' to the caller
+      description: Gets all tracks
       # used as the method name of the controller
-      operationId: hello
+      operationId: getAllTracks
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/Tracks"
+        # responses may fall through to errors
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /tracks/{trackID}:
+    x-swagger-router-controller: getTrack
+    get:
+      description: Gets specific track
+      # used as the method name of the controller
+      operationId: getTrack
       parameters:
-        - name: name
-          in: query
+        - $ref: '#/parameters/trackID'      
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/Track"
+        # responses may fall through to errors
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    post:
+      description: Updates specific track
+      # used as the method name of the controller
+      operationId: updateTrack
+      parameters:
+        - $ref: '#/parameters/trackID'      
+
+      responses:
+        "201":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/Track"
+        # responses may fall through to errors
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /tracks/{trackID}/play:
+    x-swagger-router-controller: playTrack
+    post:
+      description: Plays a specific track
+      # used as the method name of the controller
+      operationId: playTrack
+      parameters:
+        - $ref: '#/parameters/trackID'      
+
+      responses:
+        "202":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/PlayResponse"
+        # responses may fall through to errors
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /settings:
+    x-swagger-router-controller: getAllSettings
+    get:
+      description: Gets all settings
+      # used as the method name of the controller
+      operationId: getAllSettings
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/Settings"
+        # responses may fall through to errors
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /settings/{setting}:
+    x-swagger-router-controller: getSetting
+    get:
+      description: Gets specific setting
+      # used as the method name of the controller
+      operationId: getSetting
+      parameters:
+        - name: setting
+          in: path
           description: The name of the person to whom to say hello
-          required: false
+          required: true
           type: string
       responses:
         "200":
           description: Success
           schema:
             # a pointer to a definition
-            $ref: "#/definitions/HelloWorldResponse"
+            $ref: "#/definitions/Setting"
         # responses may fall through to errors
         default:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
+    post:
+      description: Updates specific setting
+      # used as the method name of the controller
+      operationId: updateSetting
+      parameters:
+        - name: setting
+          in: path
+          description: The name of the person to whom to say hello
+          required: true
+          type: string
+      responses:
+        "201":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/Setting"
+        # responses may fall through to errors
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+parameters:
+  trackID:
+    name: trackID
+    in: path
+    type: "string"
+    required: true
+    description: The track id to use
+
 # complex objects have schema definitions
 definitions:
-  HelloWorldResponse:
-    required:
-      - message
+  Track:
     properties:
-      message:
+      selection:
         type: string
+      title:
+        type: string
+      artist:
+        type: string
+      uri:
+        type: string
+      metadata:
+        type: string
+  Tracks:
+    type: array
+    items:
+      $ref: '#/definitions/Track'      
+  Setting:
+    properties:
+      name:
+        type: string
+      value:
+        type: string
+  Settings:
+    type: array
+    items:
+      $ref: '#/definitions/Setting'      
+  PlayResponse:
+    properties:
+      enquedTrackNumber:
+        type: string
+
   ErrorResponse:
     required:
       - message
