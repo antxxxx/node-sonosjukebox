@@ -18,7 +18,7 @@ produces:
   - application/json
 paths:
   /tracks:
-    x-swagger-router-controller: getAllTracks
+    x-swagger-router-controller: tracks
     get:
       description: Gets all tracks
       # used as the method name of the controller
@@ -35,7 +35,7 @@ paths:
           schema:
             $ref: "#/definitions/ErrorResponse"
   /tracks/{trackID}:
-    x-swagger-router-controller: getTrack
+    x-swagger-router-controller: tracks
     get:
       description: Gets specific track
       # used as the method name of the controller
@@ -72,7 +72,7 @@ paths:
           schema:
             $ref: "#/definitions/ErrorResponse"
   /tracks/{trackID}/play:
-    x-swagger-router-controller: playTrack
+    x-swagger-router-controller: tracks
     post:
       description: Plays a specific track
       # used as the method name of the controller
@@ -92,7 +92,7 @@ paths:
           schema:
             $ref: "#/definitions/ErrorResponse"
   /settings:
-    x-swagger-router-controller: getAllSettings
+    x-swagger-router-controller: settings
     get:
       description: Gets all settings
       # used as the method name of the controller
@@ -109,7 +109,7 @@ paths:
           schema:
             $ref: "#/definitions/ErrorResponse"
   /settings/{setting}:
-    x-swagger-router-controller: getSetting
+    x-swagger-router-controller: settings
     get:
       description: Gets specific setting
       # used as the method name of the controller
