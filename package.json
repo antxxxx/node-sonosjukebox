@@ -1,0 +1,33 @@
+{
+  "name": "sonosjukebox",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "dependencies": {
+    "express": "3.x.x",
+    "a127-magic": "^0.11.0"
+  },
+  "devDependencies": {
+    "should": "4.4.x",
+    "supertest": "0.15.x"
+  },  
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/antxxxx/sonosjukebox.git"
+  },
+  "author": "anthony@found-it.net",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/antxxxx/sonosjukebox/issues"
+  },
+  "homepage": "https://github.com/antxxxx/sonosjukebox#readme",
+  "api": {
+    "name": "sonosjukebox",
+    "basePath": "/sonosjukebox",
+    "main": "app.js"
+  }
+}
