@@ -17,7 +17,7 @@ consumes:
 produces:
   - application/json
 paths:
-  /tracks:
+  /jukebox/tracks:
     x-swagger-router-controller: tracks
     get:
       description: Gets all tracks
@@ -34,7 +34,7 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
-  /tracks/{trackID}:
+  /jukebox/tracks/{trackID}:
     x-swagger-router-controller: tracks
     get:
       description: Gets specific track
@@ -71,7 +71,7 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
-  /tracks/{trackID}/play:
+  /jukebox/tracks/{trackID}/play:
     x-swagger-router-controller: tracks
     post:
       description: Plays a specific track
@@ -91,7 +91,7 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
-  /settings:
+  /jukebox/settings:
     x-swagger-router-controller: settings
     get:
       description: Gets all settings
@@ -108,7 +108,7 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
-  /settings/{setting}:
+  /jukebox/settings/{setting}:
     x-swagger-router-controller: settings
     get:
       description: Gets specific setting
