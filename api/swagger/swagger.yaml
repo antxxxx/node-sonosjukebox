@@ -34,14 +34,34 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
-  /jukebox/tracks/{trackID}:
+  /jukebox/tracks/{selectionLetter}:
+    x-swagger-router-controller: tracks
+    get:
+      description: Gets all tracks for a letter
+      # used as the method name of the controller
+      operationId: getTracksForLetter
+      parameters:
+        - $ref: '#/parameters/selectionLetter'      
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/Track"
+        # responses may fall through to errors
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /jukebox/tracks/{selectionLetter}/{selectionNumber}:
     x-swagger-router-controller: tracks
     get:
       description: Gets specific track
       # used as the method name of the controller
       operationId: getTrack
       parameters:
-        - $ref: '#/parameters/trackID'      
+        - $ref: '#/parameters/selectionLetter'      
+        - $ref: '#/parameters/selectionNumber'      
       responses:
         "200":
           description: Success
@@ -58,8 +78,14 @@ paths:
       # used as the method name of the controller
       operationId: updateTrack
       parameters:
-        - $ref: '#/parameters/trackID'      
-
+        - $ref: '#/parameters/selectionLetter'      
+        - $ref: '#/parameters/selectionNumber'      
+        - name: body
+          in: body
+          description: The data to use for the template
+          required: true
+          schema:
+            $ref: "#/definitions/Track"
       responses:
         "201":
           description: Success
@@ -71,15 +97,15 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
-  /jukebox/tracks/{trackID}/play:
+  /jukebox/tracks/{selectionLetter}/{selectionNumber}/play:
     x-swagger-router-controller: tracks
     post:
       description: Plays a specific track
       # used as the method name of the controller
       operationId: playTrack
       parameters:
-        - $ref: '#/parameters/trackID'      
-
+        - $ref: '#/parameters/selectionLetter'      
+        - $ref: '#/parameters/selectionNumber'      
       responses:
         "202":
           description: Success
@@ -141,6 +167,12 @@ paths:
           description: The name of the person to whom to say hello
           required: true
           type: string
+        - name: body
+          in: body
+          description: The data to use for the template
+          required: true
+          schema:
+            $ref: "#/definitions/Setting"          
       responses:
         "201":
           description: Success
@@ -153,12 +185,18 @@ paths:
           schema:
             $ref: "#/definitions/ErrorResponse"
 parameters:
-  trackID:
-    name: trackID
+  selectionLetter:
+    name: selectionLetter
     in: path
     type: "string"
     required: true
-    description: The track id to use
+    description: The selection letter to use
+  selectionNumber:
+    name: selectionNumber
+    in: path
+    type: "string"
+    required: true
+    description: The selection number to use
 
 # complex objects have schema definitions
 definitions:
