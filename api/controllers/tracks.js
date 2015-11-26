@@ -1,3 +1,5 @@
+var _ = require('lodash');
+
 var db = require('../../helpers/jukeboxDB'),
     jukeboxDB = db.jukeboxDB;
 
@@ -13,7 +15,7 @@ function getAllTracks(req, resp) {
     var query = { 
         type: 'jukeboxEntry' 
     }
-    var projections = { selectionData: 1, _id: 0 }
+    var projections = {  _id: 0, type: 0, selectionLetter: 0, selectionNumber: 0 }
     jukeboxDB.find(query, projections, function (err, docs) {
         resp.send(docs)
 
@@ -25,7 +27,7 @@ function getTracksForLetter(req, resp) {
         type: 'jukeboxEntry',  
         selectionLetter: req.swagger.params.selectionLetter.value
     }
-    var projections = { selectionData: 1, _id: 0 }
+    var projections = {  _id: 0, type: 0, selectionLetter: 0, selectionNumber: 0 }
     jukeboxDB.find(query, projections, function (err, docs) {
         resp.send(docs)
     });
@@ -38,7 +40,7 @@ function getTrack(req, resp) {
         selectionLetter: req.swagger.params.selectionLetter.value,
         selectionNumber: req.swagger.params.selectionNumber.value
     }
-    var projections = { selectionData: 1, _id: 0 }
+    var projections = {  _id: 0, type: 0, selectionLetter: 0, selectionNumber: 0 }
     jukeboxDB.find(query, projections, function (err, docs) {
         resp.send(docs)
 
@@ -50,9 +52,9 @@ function updateTrack(req, resp) {
     var insertDoc = {
         type: "jukeboxEntry",
         selectionLetter: req.swagger.params.selectionLetter.value,
-        selectionNumber: req.swagger.params.selectionNumber.value,
-        selectionData: body
+        selectionNumber: req.swagger.params.selectionNumber.value
     }
+    insertDoc = _.assign(insertDoc, body)
     var query = { 
         type: 'jukeboxEntry',  
         selectionLetter: req.swagger.params.selectionLetter.value,
