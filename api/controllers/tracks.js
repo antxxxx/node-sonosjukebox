@@ -41,10 +41,11 @@ function getTrack(req, resp) {
         selectionNumber: req.swagger.params.selectionNumber.value
     }
     var projections = {  _id: 0, type: 0, selectionLetter: 0, selectionNumber: 0 }
-    jukeboxDB.find(query, projections, function (err, docs) {
+    jukeboxDB.findOne(query, projections, function (err, docs) {
         resp.send(docs)
 
-    });}
+    });
+}
 
 
 function updateTrack(req, resp) {

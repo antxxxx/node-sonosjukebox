@@ -1,5 +1,15 @@
-extends layout
-
-block content
-  h1= title
-  p Welcome to #{title}
+doctype html
+html(lang="en")
+  head
+     title= pageTitle
+ 
+  body
+     h1 Sonos jukebox
+     p SonosIP
+     p#sonosip Sonos IP :
+    button(
+    type='button'
+    onclick="GetConfig('sonos', 'sonosip')"
+    ) refresh     
+script(src="//code.jquery.com/jquery-2.1.4.min.js")
+script(src="/javascripts/main.js")

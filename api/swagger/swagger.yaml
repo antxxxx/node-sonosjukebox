@@ -218,7 +218,7 @@ definitions:
       $ref: '#/definitions/Track'      
   Setting:
     properties:
-      name:
+      setting:
         type: string
       value:
         type: string
