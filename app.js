@@ -4,6 +4,9 @@ var http = require('http');
 var swaggerTools = require('swagger-tools');
 var YAML = require('yamljs');
 var express = require('express');
+var path = require('path');
+var cookieParser = require('cookie-parser');
+var bodyParser = require('body-parser');
 var serverPort = 3000;
 
 // swaggerRouter configuration
@@ -14,7 +17,10 @@ var options = {
 
 // The Swagger document (require it, build it programmatically, fetch it from a URL, ...)
 var swaggerDoc = YAML.load('./api/swagger/swagger.yaml');
+var routes = require('./site/routes/index');
 var app = express();
+app.set('views', path.join(__dirname, 'site/views'));
+app.set('view engine', 'jade');
 // Initialize the Swagger middleware
 swaggerTools.initializeMiddleware(swaggerDoc, function (middleware) {
   // Interpret Swagger resources and attach metadata to request - must be first in swagger-tools middleware chain
@@ -28,6 +34,12 @@ swaggerTools.initializeMiddleware(swaggerDoc, function (middleware) {
     
     // Serve the Swagger documents and Swagger UI
     app.use(middleware.swaggerUi());
+    
+    app.use(bodyParser.json());
+    app.use(bodyParser.urlencoded({ extended: false }));
+    app.use(cookieParser());
+    app.use(express.static(path.join(__dirname, 'site/public')));
+    app.use('/', routes);
     // error handler to emit errors as a json string
     app.use(function (err, req, res,next) {
         /*jshint unused: vars*/
@@ -45,7 +57,7 @@ swaggerTools.initializeMiddleware(swaggerDoc, function (middleware) {
         
     // Start the server
     http.createServer(app).listen(serverPort, function () {
-    console.log('Your server is listening on port %d (http://localhost:%d)', serverPort, serverPort);
+        console.log('Your server is listening on port %d (http://localhost:%d)', serverPort, serverPort);
     });
 });
 
