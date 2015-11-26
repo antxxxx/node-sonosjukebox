@@ -1,3 +1,6 @@
+mixin div(id)
+  div(id=id)
+
 doctype html
 html(lang="en")
   head
@@ -5,11 +8,11 @@ html(lang="en")
  
   body
      h1 Sonos jukebox
-     p SonosIP
-     p#sonosip Sonos IP :
-    button(
-    type='button'
-    onclick="GetConfig('sonos', 'sonosip')"
-    ) refresh     
+     |Sonos IP address 
+     input#sonosip(type=type, value='NOT SET')
+     button(
+     type='button'
+     onclick="SetConfig('sonos', 'sonosip')"
+     ) update     
 script(src="//code.jquery.com/jquery-2.1.4.min.js")
 script(src="/javascripts/main.js")
