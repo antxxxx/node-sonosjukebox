@@ -10,26 +10,36 @@ module.exports = {
 }
 
 function getAllTracks(req, resp) {
-    jukeboxDB.find({ type: 'jukeboxEntry' }, function (err, docs) {
+    var query = { 
+        type: 'jukeboxEntry' 
+    }
+    var projections = { selectionData: 1, _id: 0 }
+    jukeboxDB.find(query, projections, function (err, docs) {
         resp.send(docs)
 
     });
 }
 
 function getTracksForLetter(req, resp) {
-    jukeboxDB.find({ type: 'jukeboxEntry',  selectionLetter: req.swagger.params.selectionLetter.value}, function (err, docs) {
+    var query = { 
+        type: 'jukeboxEntry',  
+        selectionLetter: req.swagger.params.selectionLetter.value
+    }
+    var projections = { selectionData: 1, _id: 0 }
+    jukeboxDB.find(query, projections, function (err, docs) {
         resp.send(docs)
-
     });
 }
 
 
 function getTrack(req, resp) {
-    jukeboxDB.find({ 
+    var query = { 
         type: 'jukeboxEntry',  
         selectionLetter: req.swagger.params.selectionLetter.value,
         selectionNumber: req.swagger.params.selectionNumber.value
-    }, function (err, docs) {
+    }
+    var projections = { selectionData: 1, _id: 0 }
+    jukeboxDB.find(query, projections, function (err, docs) {
         resp.send(docs)
 
     });}
@@ -41,9 +51,14 @@ function updateTrack(req, resp) {
         type: "jukeboxEntry",
         selectionLetter: req.swagger.params.selectionLetter.value,
         selectionNumber: req.swagger.params.selectionNumber.value,
-        value: body
+        selectionData: body
     }
-    jukeboxDB.insert(insertDoc, function (err, newDoc) {   
+    var query = { 
+        type: 'jukeboxEntry',  
+        selectionLetter: req.swagger.params.selectionLetter.value,
+        selectionNumber: req.swagger.params.selectionNumber.value
+    }
+    jukeboxDB.update(query, insertDoc, { upsert: true }, function (err, newDoc) {   
         resp.send(insertDoc)
         // Callback is optional
         // newDoc is the newly inserted document, including its _id
