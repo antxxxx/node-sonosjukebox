@@ -1,8 +1,16 @@
 mixin SelectionRow(number)
   tr
     td= number
-    td(id='artist_'+number)
-    td(id='title_'+number)
+    td
+      input(id='artist_'+number, type=type, value='', cols=20)
+    td
+      input(id='title_'+number, type=type, value='', cols=20)
+    td
+      button(
+        type='button'
+        onclick="UpdateSelection(" + i +")"
+        id='update_'+number
+      ) update      
 
 doctype html
 html(lang="en")
@@ -28,24 +36,24 @@ html(lang="en")
      p Favourites
      p#Favourites 
      ul.nav.nav-tabs
-      li: a(href="#A") A
-      li: a(href="#B") B
-      li: a(href="#C") C
-      li: a(href="#D") D
-      li: a(href="#E") E
-      li: a(href="#F") F
-      li: a(href="#G") G
-      li: a(href="#H") H
-      li: a(href="#I") I
-      li: a(href="#J") J
+      li.letterSelection: a(href="#A") A
+      li.letterSelection: a(href="#B") B
+      li.letterSelection: a(href="#C") C
+      li.letterSelection: a(href="#D") D
+      li.letterSelection: a(href="#E") E
+      li.letterSelection: a(href="#F") F
+      li.letterSelection: a(href="#G") G
+      li.letterSelection: a(href="#H") H
+      li.letterSelection: a(href="#I") I
+      li.letterSelection: a(href="#J") J
      #DefaultSelection Please select a letter to view selections
      #LetterSelection
        table
          thead
            tr
-            th selection
-            th artist
-            th title
+            th selection 
+            th(style = "text-align: center;") artist
+            th(style = "text-align: center;") title
          - for (var i = 1; i < 9; ++i)
           +SelectionRow(i)
          +SelectionRow(0)

@@ -25,25 +25,52 @@ function SetConfig(setting, placeholderid) {
     });
 }
 
+function UpdateSelection(numberSelection) {
+    var letterSelection = $(".active")[0].text;
+    var postData =   {
+      "selection": letterSelection + numberSelection,
+      "title": $('#title_' + numberSelection).val(),
+      "artist": $('#artist_' + numberSelection).val(),
+      "uri": "iiii",
+      "metadata": "eeiidhhhhhhheeeeiiiii"
+    };
+    $.ajax({
+        url:'/api/jukebox/tracks/' + letterSelection + '/' + numberSelection + '/',
+        type:"POST",
+        data:JSON.stringify(postData),
+        contentType:"application/json; charset=utf-8",
+        dataType:"json",
+        success: function(){
+        }
+    });
+}
+
 $('ul.nav.nav-tabs').each(function(){
+    var $active;
+    $active = $("#DefaultSelection");
     // For each set of tabs, we want to keep track of
     // which tab is active and it's associated content
 
     $("#LetterSelection").hide();
     // Bind the click event handler
     $(this).on('click', 'a', function(e){
+      $active.removeClass('active');
+      $active = $(this);
+      $active.addClass('active');
       var url = '/api/jukebox/tracks/' + $(this)[0].text +'/';
       $.get(url, function (data) {
         $("#LetterSelection").show();
         $("#DefaultSelection").hide();
         for (i = 0; i < 9; i++) { 
-          $('#artist_' + i).text("");
-          $('#title_' + i).text("");
+          $('#artist_' + i).val("");
+          $('#title_' + i).val("");
+          $('#update_' + i).hide();
         }
         $.each(data, function(index, value) {
           var selectionNumber = value.selectionNumber;
-          $('#artist_' + selectionNumber).text(value.artist);
-          $('#title_' + selectionNumber).text(value.title);
+          $('#artist_' + selectionNumber).val(value.artist);
+          $('#title_' + selectionNumber).val(value.title);
+          $('#update_' + selectionNumber).show();
         });
       });
 
