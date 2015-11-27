@@ -25,7 +25,7 @@ function getAllSettings(req, resp) {
 function getSetting(req, resp) {
     var query = { 
         type: 'settings',  
-        setting: req.swagger.params.setting.value,
+        setting: req.swagger.params.setting.value
     }
     var projections = {  _id: 0, type: 0 }
     jukeboxDB.findOne(query, projections, function (err, docs) {

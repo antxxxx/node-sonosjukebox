@@ -184,6 +184,44 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
+  /sonos/search:
+    x-swagger-router-controller: sonos
+    get:
+      description: Search for a track
+      # used as the method name of the controller
+      operationId: searchSonos
+      parameters:
+        - $ref: '#/parameters/searchTerm'  
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/Tracks"
+        # responses may fall through to errors
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /spotify/search:
+    x-swagger-router-controller: spotify
+    get:
+      description: Search for a track
+      # used as the method name of the controller
+      operationId: searchSpotify
+      parameters:
+        - $ref: '#/parameters/searchTerm'  
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/Tracks"
+        # responses may fall through to errors
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
 parameters:
   selectionLetter:
     name: selectionLetter
@@ -197,6 +235,11 @@ parameters:
     type: "string"
     required: true
     description: The selection number to use
+  searchTerm:
+    name: q
+    in: query
+    type: "string"
+    required: false
 
 # complex objects have schema definitions
 definitions:
