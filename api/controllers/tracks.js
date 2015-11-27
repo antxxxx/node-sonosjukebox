@@ -1,4 +1,7 @@
 var _ = require('lodash');
+var Sonos = require('sonos').Sonos;
+var async = require("async");
+
 
 var db = require('../../helpers/jukeboxDB'),
     jukeboxDB = db.jukeboxDB;
@@ -70,5 +73,59 @@ function updateTrack(req, resp) {
 }
 
 function playTrack(req, resp) {
-    throw({message: 'not implemented yet'})
+    var sonosIP;
+    var uri;
+    var metadata;
+    var playing;
+    async.series([
+        // get sonos ip
+        function(callback) {
+            var query = { 
+                type: 'settings',  
+                setting: 'sonos'
+            };
+            var projections = {  _id: 0, type: 0 }
+            jukeboxDB.findOne(query, projections, function (err, docs) {
+                if (err) return callback(err);
+                sonosIP = docs.value;
+                callback();
+            });
+        },
+        // get track details
+        function(callback){
+            var query = { 
+                type: 'jukeboxEntry',  
+                selectionLetter: req.swagger.params.selectionLetter.value,
+                selectionNumber: req.swagger.params.selectionNumber.value
+            };
+            var projections = {  _id: 0, type: 0, selectionLetter: 0, selectionNumber: 0 }
+            jukeboxDB.findOne(query, projections, function (err, docs) {
+                if (err) return callback(err);
+                uri = docs.uri;
+                metadata = docs.metadata;                
+                callback();
+            });
+        },
+        // play the track
+        function(callback){
+            var sonos = new Sonos(sonosIP, 1400);
+            var options = {
+                uri: uri,
+                metadata: metadata
+            };
+            sonos.play(options, function(err, res){
+                if (err) return callback(err);
+                playing = res;
+                callback();
+            });
+        }
+        
+    ], function(err){
+        if (err) {
+            resp.send(err);
+            return;
+        }
+        resp.send(playing);
+    });
+
 }
