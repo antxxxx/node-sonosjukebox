@@ -36,6 +36,10 @@ $('ul.nav.nav-tabs').each(function(){
       $.get(url, function (data) {
         $("#LetterSelection").show();
         $("#DefaultSelection").hide();
+        for (i = 0; i < 9; i++) { 
+          $('#artist_' + i).text("");
+          $('#title_' + i).text("");
+        }
         $.each(data, function(index, value) {
           var selectionNumber = value.selectionNumber;
           $('#artist_' + selectionNumber).text(value.artist);
