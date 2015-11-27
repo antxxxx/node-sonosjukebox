@@ -25,7 +25,17 @@ function searchSonos(req, resp) {
             total : 10
         }
         sonos.searchMusicLibrary('tracks', req.swagger.params.q.value, opts, function (err, data) {
-            resp.send(data)
+            if (err) {
+                var response = {
+                    "returned": "0",
+                    "total": "0",
+                    "items": []
+                }
+                resp.send(response)
+
+            } else {
+                resp.send(data)
+            }
         })
     });
 }
