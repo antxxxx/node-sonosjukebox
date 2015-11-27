@@ -48,7 +48,7 @@ function Search() {
     $.get(url, function (data) {
         $('#sonosReturned').text(data.returned);
         $('#sonosTotal').text(data.total);
-        var table = "";
+        var table = "<thead><tr><th>track</th><th>artist</th><th>album</th><th>assign to</th><th></th></tr></thead>";
         var i=0;
         data.items.forEach(function(item) {
           var row = "<tr>";
@@ -58,7 +58,8 @@ function Search() {
           row += "<td style='display:none;' id=sonos_uri_" + i +">" + item.uri +"</td>";
           row += "<td style='display:none;' id=sonos_metadata_" + i +"></td>";
           row += "<td><input id=sonos_selection_" + i + "></td>";
-          row += "<td><button type='button' onclick='AssignTrack(" + i + ", 'sonos')'>assign</button></td>";
+          var onClickString = 'AssignTrack(' + i + ', "sonos")';
+          row += "<td><button type='button' onclick='" + onClickString + "'>assign</button></td>";
           row += "</tr>";
           table += row;
           i++;
@@ -70,7 +71,7 @@ function Search() {
     $.get(url, function (data) {
         $('#spotifyReturned').text(data.returned);
         $('#spotifyTotal').text(data.total);
-        var table = "";
+        var table = "<thead><tr><th>track</th><th>artist</th><th>album</th><th>assign to</th><th></th></tr></thead>";
         var i=0;
         data.items.forEach(function(item) {
           var row = "<tr>";
@@ -80,7 +81,8 @@ function Search() {
           row += "<td style='display:none;' id=spotify_uri_" + i +">" + item.uri +"</td>";
           row += "<td style='display:none;' id=spotify_metadata_" + i +"></td>";
           row += "<td><input id=spotify_selection_" + i + "></td>";
-          row += "<td><button type='button' onclick='AssignTrack(" + i + ", 'spotify')'>assign</button></td>";
+          var onClickString = 'AssignTrack(' + i + ', "spotify")';
+          row += "<td><button type='button' onclick='" + onClickString + "'>assign</button></td>";
           row += "</tr>";
           table += row;
           i++;
@@ -151,4 +153,10 @@ $('ul.nav.nav-tabs').each(function(){
     });
   });
 
+$body = $("body");
+
+$(document).on({
+    ajaxStart: function() { $body.addClass("loading");    },
+     ajaxStop: function() { $body.removeClass("loading"); }    
+});
 GetConfig("sonos", "sonosip");

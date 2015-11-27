@@ -17,6 +17,7 @@ html(lang="en")
   head
     title= pageTitle
     link(rel='stylesheet', href='http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css')
+    link(rel='stylesheet', href='/stylesheets/modal.css')
   body
      h1 Sonos jukebox
      |Sonos IP address 
@@ -38,7 +39,7 @@ html(lang="en")
      p
      | Total results 
      #sonosTotal
-     table#sonosResults
+     table#sonosResults.resultsTable
 
      p Spotify Results
      | Items returned 
@@ -46,7 +47,7 @@ html(lang="en")
      p
      | Total results 
      #spotifyTotal
-     table#spotifyResults
+     table#spotifyResults.resultsTable
      p Favourites
      p#Favourites 
      ul.nav.nav-tabs
