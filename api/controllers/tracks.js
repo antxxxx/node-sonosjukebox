@@ -61,7 +61,7 @@ function updateTrack(req, resp) {
         selectionLetter: req.swagger.params.selectionLetter.value,
         selectionNumber: req.swagger.params.selectionNumber.value
     }
-    jukeboxDB.update(query, insertDoc, { upsert: true }, function (err, newDoc) {   
+    jukeboxDB.update(query, { $set:insertDoc }, { upsert: true }, function (err, newDoc) {   
         resp.send(insertDoc)
         // Callback is optional
         // newDoc is the newly inserted document, including its _id

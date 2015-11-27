@@ -30,9 +30,7 @@ function UpdateSelection(numberSelection) {
     var postData =   {
       "selection": letterSelection + numberSelection,
       "title": $('#title_' + numberSelection).val(),
-      "artist": $('#artist_' + numberSelection).val(),
-      "uri": "iiii",
-      "metadata": "eeiidhhhhhhheeeeiiiii"
+      "artist": $('#artist_' + numberSelection).val()
     };
     $.ajax({
         url:'/api/jukebox/tracks/' + letterSelection + '/' + numberSelection + '/',
