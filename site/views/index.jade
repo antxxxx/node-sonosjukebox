@@ -26,13 +26,27 @@ html(lang="en")
      onclick="SetConfig('sonos', 'sonosip')"
      ) update
      p
-     input#sonosip(type=type, value='')
+     input#searchString(type=type, value='')
      button(
      type='button'
-     onclick="SetConfig('sonos', 'sonosip')"
+     onclick="Search()"
      ) search
      p Search Results
-     p#SearchResults
+     p Sonos Results
+     | Items returned 
+     #sonosReturned
+     p
+     | Total results 
+     #sonosTotal
+     table#sonosResults
+
+     p Spotify Results
+     | Items returned 
+     #spotifyReturned
+     p
+     | Total results 
+     #spotifyTotal
+     table#spotifyResults
      p Favourites
      p#Favourites 
      ul.nav.nav-tabs
@@ -57,6 +71,6 @@ html(lang="en")
          - for (var i = 1; i < 9; ++i)
           +SelectionRow(i)
          +SelectionRow(0)
-
+     .modal
 script(src="//code.jquery.com/jquery-2.1.4.min.js")
 script(src="/javascripts/main.js")
