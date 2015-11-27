@@ -1,11 +1,14 @@
-mixin div(id)
-  div(id=id)
+mixin SelectionRow(number)
+  tr
+    td= number
+    td(id='artist_'+number)
+    td(id='title_'+number)
 
 doctype html
 html(lang="en")
   head
-     title= pageTitle
- 
+    title= pageTitle
+    link(rel='stylesheet', href='http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css')
   body
      h1 Sonos jukebox
      |Sonos IP address 
@@ -13,6 +16,39 @@ html(lang="en")
      button(
      type='button'
      onclick="SetConfig('sonos', 'sonosip')"
-     ) update     
+     ) update
+     p
+     input#sonosip(type=type, value='')
+     button(
+     type='button'
+     onclick="SetConfig('sonos', 'sonosip')"
+     ) search
+     p Search Results
+     p#SearchResults
+     p Favourites
+     p#Favourites 
+     ul.nav.nav-tabs
+      li: a(href="#A") A
+      li: a(href="#B") B
+      li: a(href="#C") C
+      li: a(href="#D") D
+      li: a(href="#E") E
+      li: a(href="#F") F
+      li: a(href="#G") G
+      li: a(href="#H") H
+      li: a(href="#I") I
+      li: a(href="#J") J
+     #DefaultSelection Please select a letter to view selections
+     #LetterSelection
+       table
+         thead
+           tr
+            th selection
+            th artist
+            th title
+         - for (var i = 1; i < 9; ++i)
+          +SelectionRow(i)
+         +SelectionRow(0)
+
 script(src="//code.jquery.com/jquery-2.1.4.min.js")
 script(src="/javascripts/main.js")
