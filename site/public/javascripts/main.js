@@ -46,8 +46,8 @@ function UpdateSelection(numberSelection) {
 function Search() {
     var url = "api/sonos/search?q=" + $('#searchString').val();
     $.get(url, function (data) {
-        $('#sonosReturned').text(data.returned);
-        $('#sonosTotal').text(data.total);
+        $('#sonosReturned').text("Items returned : " + data.returned);
+        $('#sonosTotal').text("Total results : " + data.total);
         var table = "<thead><tr><th>track</th><th>artist</th><th>album</th><th>assign to</th><th></th></tr></thead>";
         var i=0;
         data.items.forEach(function(item) {
@@ -69,8 +69,8 @@ function Search() {
 
     var url = "api/spotify/search?q=" + $('#searchString').val();
     $.get(url, function (data) {
-        $('#spotifyReturned').text(data.returned);
-        $('#spotifyTotal').text(data.total);
+        $('#spotifyReturned').text("Items returned : " + data.returned);
+        $('#spotifyTotal').text("Total results : " + data.total);
         var table = "<thead><tr><th>track</th><th>artist</th><th>album</th><th>assign to</th><th></th></tr></thead>";
         var i=0;
         data.items.forEach(function(item) {
@@ -153,6 +153,23 @@ $('ul.nav.nav-tabs').each(function(){
     });
   });
 
+$.fn.onEnterKey =
+    function( closure ) {
+        $(this).keypress(
+            function( event ) {
+                var code = event.keyCode ? event.keyCode : event.which;
+
+                if (code == 13) {
+                    closure();
+                    return false;
+                }
+            } );
+    }
+    
+$('#searchString').onEnterKey(
+    function() {
+        Search();
+    } );    
 $body = $("body");
 
 $(document).on({
