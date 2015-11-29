@@ -1,7 +1,7 @@
 var _ = require('lodash');
 var Sonos = require('sonos').Sonos;
 var async = require("async");
-
+var sonosFunctions = require('../../helpers/sonosFunctions');
 
 var db = require('../../helpers/jukeboxDB'),
     jukeboxDB = db.jukeboxDB;
@@ -77,50 +77,84 @@ function playTrack(req, resp) {
     var uri;
     var metadata;
     var playing;
+    var queuedTrackNumber;
+    var playingState;
     async.series([
         // get sonos ip
         function(callback) {
-            var query = { 
-                type: 'settings',  
-                setting: 'sonos'
-            };
-            var projections = {  _id: 0, type: 0 }
-            jukeboxDB.findOne(query, projections, function (err, docs) {
+            sonosFunctions.getSonosIP(function(err, data){
                 if (err) return callback(err);
-                sonosIP = docs.value;
+                sonosIP = data;
                 callback();
             });
         },
         // get track details
         function(callback){
-            var query = { 
-                type: 'jukeboxEntry',  
-                selectionLetter: req.swagger.params.selectionLetter.value,
-                selectionNumber: req.swagger.params.selectionNumber.value
-            };
-            var projections = {  _id: 0, type: 0, selectionLetter: 0, selectionNumber: 0 }
-            jukeboxDB.findOne(query, projections, function (err, docs) {
+            sonosFunctions.getTrackDetails(req.swagger.params.selectionLetter.value,
+            req.swagger.params.selectionNumber.value,
+            function(err, returnedURI, returnedMetadata){
                 if (err) return callback(err);
-                uri = docs.uri;
-                metadata = docs.metadata;                
+                uri = returnedURI;
+                metadata = returnedMetadata;
                 callback();
             });
         },
-        // play the track
+        // queue the track
         function(callback){
             var sonos = new Sonos(sonosIP, 1400);
             var options = {
                 uri: uri,
                 metadata: metadata
             };
-            sonos.play(options, function(err, res){
+            sonos.queue(options, function(err, res){
                 if (err) return callback(err);
-                playing = res;
+                queuedTrackNumber = res[0].FirstTrackNumberEnqueued[0];
                 callback();
             });
+        },
+        // get current playing track
+        function(callback){
+            sonosFunctions.getMediaInfo(sonosIP, function(err, data){
+                if (err) return callback(err);
+                playing = data;
+                callback();                
+            });
+        },
+        // get current state
+        function(callback){
+            var sonos = new Sonos(sonosIP, 1400);
+            sonos.getCurrentState(function(err, data){
+                if (err) return callback(err);
+                playingState = data;
+                callback();                
+            });
+        },
+        // work out whether to play or queue track
+        function(callback){
+            var startPlaying = false;
+            if (
+              (playing.substring(0, 14) !== 'x-rincon-queue') || 
+              (playingState !== 'playing')) {
+                startPlaying = true;
+            }
+            if (startPlaying) {
+                var sonos = new Sonos(sonosIP, 1400);
+                sonos.pause(function(err, data){
+                    if (err) return callback(err);
+                    sonos.selectQueue(function(err, data){
+                        if (err) return callback(err);
+                        sonos.selectTrack(queuedTrackNumber, function(err, data){
+                            if (err) return callback(err);
+                            sonos.play(function(err, data){
+                                if (err) return callback(err);
+                                callback();
+                            });
+                        });
+                    });
+                });                
+            }
         }
-        
-    ], function(err){
+        ], function(err){
         if (err) {
             resp.send(err);
             return;
