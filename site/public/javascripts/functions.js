@@ -4,25 +4,36 @@ function GetConfig(setting, placeholderid) {
   });
 }
 
+function createResultsTable(data, tableType) {
+  var table = "<thead><tr>" +
+  "<th>track</th>" +
+  "<th>artist</th>" +
+  "<th>album</th>" + 
+  "<th><div style='width: 75px' >assign to</div></th>" +
+  "<th><div style='width: 75px' >assign to</div></th>" +
+  "</tr></thead>";
+  var i = 0;
+  data.items.forEach(function (item) {
+    var row = "<tr>";
+    row += "<td id=" + tableType + "_title_" + i + ">" + item.title + "</td>";
+    row += "<td id=" + tableType + "_artist_" + i + ">" + item.artist + "</td>";
+    row += "<td id=" + tableType + "_album_" + i + ">" + item.album + "</td>";
+    row += "<td style='display:none;' id=" + tableType + "_uri_" + i + ">" + item.uri + "</td>";
+    row += "<td style='display:none;' id=" + tableType + "_metadata_" + i + ">" + item.metadata + "</td>";
+    row += "<td style='display:none;' id=" + tableType + "_type_" + i + ">" + item.type + "</td>";
+    row += "<td><input id=" + tableType + "_selection_" + i + " size='4'></td>";
+    var onClickString = 'AssignTrack(' + i + ', "' + tableType + '")';
+    row += "<td><button type='button' onclick='" + onClickString + "'>assign</button></td>";
+    row += "</tr>";
+    table += row;
+    i++;
+  });
+  return (table);  
+}
+
 function GetFavourites() {
   $.get('/api/sonos/favourites', function (data) {
-    var table = "<thead><tr><th>track</th><th>artist</th><th>album</th><th>assign to</th><th></th></tr></thead>";
-    var i = 0;
-    data.items.forEach(function (item) {
-      var row = "<tr>";
-      row += "<td id=favourite_title_" + i + ">" + item.title + "</td>";
-      row += "<td id=favourite_artist_" + i + ">" + item.artist + "</td>";
-      row += "<td id=favourite_album_" + i + ">" + item.album + "</td>";
-      row += "<td style='display:none;' id=favourite_uri_" + i + ">" + item.uri + "</td>";
-      row += "<td style='display:none;' id=favourite_metadata_" + i + ">" + item.metadata + "</td>";
-      row += "<td style='display:none;' id=favourite_type_" + i + ">" + item.type + "</td>";
-      row += "<td><input id=favourite_selection_" + i + "></td>";
-      var onClickString = 'AssignTrack(' + i + ', "favourite")';
-      row += "<td><button type='button' onclick='" + onClickString + "'>assign</button></td>";
-      row += "</tr>";
-      table += row;
-      i++;
-    });
+    var table = createResultsTable(data, 'favourite');
     $("#favouriteResults").html(table);
   });
 }
@@ -65,23 +76,7 @@ function Search() {
   $.get(url, function (data) {
     $('#sonosReturned').text("Items returned : " + data.returned);
     $('#sonosTotal').text("Total results : " + data.total);
-    var table = "<thead><tr><th>track</th><th>artist</th><th>album</th><th>assign to</th><th></th></tr></thead>";
-    var i = 0;
-    data.items.forEach(function (item) {
-      var row = "<tr>";
-      row += "<td id=sonos_title_" + i + ">" + item.title + "</td>";
-      row += "<td id=sonos_artist_" + i + ">" + item.artist + "</td>";
-      row += "<td id=sonos_album_" + i + ">" + item.album + "</td>";
-      row += "<td style='display:none;' id=sonos_uri_" + i + ">" + item.uri + "</td>";
-      row += "<td style='display:none;' id=sonos_metadata_" + i + "></td>";
-      row += "<td style='display:none;' id=sonos_type_" + i + ">track</td>";
-      row += "<td><input id=sonos_selection_" + i + "></td>";
-      var onClickString = 'AssignTrack(' + i + ', "sonos")';
-      row += "<td><button type='button' onclick='" + onClickString + "'>assign</button></td>";
-      row += "</tr>";
-      table += row;
-      i++;
-    });
+    var table = createResultsTable(data, 'sonos');
     $("#sonosResults").html(table);
   });
 
@@ -89,23 +84,7 @@ function Search() {
   $.get(spotifyURL, function (data) {
     $('#spotifyReturned').text("Items returned : " + data.returned);
     $('#spotifyTotal').text("Total results : " + data.total);
-    var table = "<thead><tr><th>track</th><th>artist</th><th>album</th><th>assign to</th><th></th></tr></thead>";
-    var i = 0;
-    data.items.forEach(function (item) {
-      var row = "<tr>";
-      row += "<td id=spotify_title_" + i + ">" + item.title + "</td>";
-      row += "<td id=spotify_artist_" + i + ">" + item.artist + "</td>";
-      row += "<td id=spotify_album_" + i + ">" + item.album + "</td>";
-      row += "<td style='display:none;' id=spotify_uri_" + i + ">" + item.uri + "</td>";
-      row += "<td style='display:none;' id=spotify_metadata_" + i + "></td>";
-      row += "<td style='display:none;' id=spotify_type_" + i + ">track</td>";
-      row += "<td><input id=spotify_selection_" + i + "></td>";
-      var onClickString = 'AssignTrack(' + i + ', "spotify")';
-      row += "<td><button type='button' onclick='" + onClickString + "'>assign</button></td>";
-      row += "</tr>";
-      table += row;
-      i++;
-    });
+    var table = createResultsTable(data, 'spotify');
     $("#spotifyResults").html(table);
   });
 
