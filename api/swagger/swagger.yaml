@@ -192,6 +192,7 @@ paths:
       operationId: searchSonos
       parameters:
         - $ref: '#/parameters/searchTerm'  
+        - $ref: '#/parameters/searchOffset'  
       responses:
         "200":
           description: Success
@@ -228,6 +229,7 @@ paths:
       operationId: searchSpotify
       parameters:
         - $ref: '#/parameters/searchTerm'  
+        - $ref: '#/parameters/searchOffset'  
       responses:
         "200":
           description: Success
@@ -254,6 +256,11 @@ parameters:
     description: The selection number to use
   searchTerm:
     name: q
+    in: query
+    type: "string"
+    required: false
+  searchOffset:
+    name: start
     in: query
     type: "string"
     required: false

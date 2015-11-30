@@ -10,9 +10,15 @@ module.exports = {
 
 function searchSpotify(req, resp) {
     var spotifyApi = new SpotifyWebApi();
+    var offset = 0;
+    if ( typeof req.swagger.params.start.value !== 'undefined'  ) {
+        offset = req.swagger.params.start.value;
+    }
+
     var options = {
         limit: 10,
-        market: 'GB'
+        market: 'GB',
+        offset: offset
     };
     spotifyApi.searchTracks('track:' + req.swagger.params.q.value, options, function (err, data) {
         if (err) {

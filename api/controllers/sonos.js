@@ -43,8 +43,12 @@ function searchSonos(req, resp) {
     jukeboxDB.findOne(query, projections, function (err, docs) {
         var sonosIP = docs.value;
         var sonos = new Sonos(sonosIP, 1400);
+        var offset = 0;
+        if ( typeof req.swagger.params.start.value !== 'undefined'  ) {
+            offset = req.swagger.params.start.value;
+        }
         var opts = {
-            start: 0,
+            start: offset,
             total: 10
         };
         sonos.searchMusicLibrary('tracks', req.swagger.params.q.value, opts, function (err, data) {
