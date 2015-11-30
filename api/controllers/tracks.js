@@ -148,7 +148,7 @@ function playTrack(req, resp) {
                 sonosFunctions.startPlayingStream(sonosIP, uri, metadata, function(err, data){
        				if (err) return callback(err);
                     callback();
-                });
+                })
             }
         }
         ], function(err){

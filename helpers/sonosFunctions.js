@@ -1,14 +1,18 @@
 var db = require('./jukeboxDB'),
     jukeboxDB = db.jukeboxDB;
 var Sonos = require('sonos').Sonos;
+var SonosServices = require('sonos').Services;
 var async = require("async");
-
+var util = require('util');
+var xml2js = require('xml2js');
+var _ = require('lodash');
 module.exports = {
     getSonosIP: getSonosIP,
 	getTrackDetails: getTrackDetails,
 	getMediaInfo: getMediaInfo,
 	startPlayingTrackNow: startPlayingTrackNow,
-	startPlayingStream: startPlayingStream
+	startPlayingStream: startPlayingStream,
+	getFavourites: getFavourites
 };
 
 function getSonosIP(callback) {
@@ -101,5 +105,55 @@ function startPlayingTrackNow(sonosIP, queuedTrackNumber, callback){
 		}
 	], function(err){
 		callback(err);
+	});
+}
+
+function getFavourites(sonosIP, callback){
+	var opts = {
+		BrowseFlag: 'BrowseDirectChildren',
+		Filter: '*',
+		StartingIndex: '0',
+		RequestedCount: '100',
+		SortCriteria: '',
+		ObjectID: 'FV:2'
+	};
+	var contentDirectory = new SonosServices.ContentDirectory(sonosIP, '1400');
+	return contentDirectory.Browse(opts, function (err, data) {
+			if (err) return callback(err)
+			return (new xml2js.Parser()).parseString(data.Result, function (err, didl) {
+				if (err) return callback(err, data)
+				var items = []
+				if ((!didl) || (!didl['DIDL-Lite'])) {
+					return callback(new Error('Cannot parse DIDTL result'), data)
+				}
+				var resultcontainer = didl['DIDL-Lite'].item;
+				if (!util.isArray(resultcontainer)) {
+					return callback(new Error('Cannot parse DIDTL result'), data)
+				}
+				_.each(resultcontainer, function (item) {
+					var albumArtURL = null
+					if (util.isArray(item['upnp:albumArtURI'])) {
+					if (item['upnp:albumArtURI'][0].indexOf('http') !== -1) {
+						albumArtURL = item['upnp:albumArtURI'][0]
+					} else {
+						albumArtURL = 'http://' + self.host + ':' + self.port + item['upnp:albumArtURI'][0]
+					}
+					}
+					items.push({
+					'title': util.isArray(item['dc:title']) ? item['dc:title'][0] : null,
+					'artist': util.isArray(item['dc:creator']) ? item['dc:creator'][0] : null,
+					'albumArtURL': albumArtURL,
+					'album': util.isArray(item['upnp:album']) ? item['upnp:album'][0] : null,
+					'uri': util.isArray(item.res) ? item.res[0]._ : null,
+					'metadata': util.isArray(item['r:resMD']) ? item['r:resMD'][0] : null
+					})
+				})
+				var result = {
+					returned: data.NumberReturned,
+					total: data.TotalMatches,
+					items: items
+				}
+				return callback(null, result);
+			});
 	});
 }

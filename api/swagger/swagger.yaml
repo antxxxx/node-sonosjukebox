@@ -203,6 +203,23 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
+  /sonos/favourites:
+    x-swagger-router-controller: sonos
+    get:
+      description: Get favourites
+      # used as the method name of the controller
+      operationId: getFavourites
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/Tracks"
+        # responses may fall through to errors
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
   /spotify/search:
     x-swagger-router-controller: spotify
     get:

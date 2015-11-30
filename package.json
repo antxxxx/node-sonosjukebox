@@ -17,6 +17,7 @@
     "sonos": "https://github.com/antxxxx/node-sonos.git#searchFix",
     "spotify-web-api-node": "^2.2.0",
     "swagger-tools": "^0.9.9",
+    "xml2js": "^0.4.15",
     "yamljs": "^0.2.4"
   },
   "devDependencies": {
