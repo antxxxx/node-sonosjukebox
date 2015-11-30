@@ -136,13 +136,19 @@ function getFavourites(sonosIP, callback) {
 						albumArtURL = 'http://' + self.host + ':' + self.port + item['upnp:albumArtURI'][0];
 					}
 				}
+				var protocol = util.isArray(item.res) ? item.res[0].$.protocolInfo : null;
+				var type = 'track';
+				if (protocol === 'x-sonosapi-stream:*:*:*' || protocol.substr(0, 17) === 'x-rincon-mp3radio') {
+					type = 'stream';
+				}
 				items.push({
 					'title': util.isArray(item['dc:title']) ? item['dc:title'][0] : null,
 					'artist': util.isArray(item['dc:creator']) ? item['dc:creator'][0] : null,
 					'albumArtURL': albumArtURL,
 					'album': util.isArray(item['upnp:album']) ? item['upnp:album'][0] : null,
 					'uri': util.isArray(item.res) ? item.res[0]._ : null,
-					'metadata': util.isArray(item['r:resMD']) ? item['r:resMD'][0] : null
+					'metadata': util.isArray(item['r:resMD']) ? item['r:resMD'][0] : null,
+					'type': type
 				});
 			});
 			var result = {
