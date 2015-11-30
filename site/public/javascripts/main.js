@@ -9,6 +9,28 @@ function GetConfig(setting, placeholderid) {
   });
 }
 
+function GetFavourites() {
+  $.get('/api/sonos/favourites', function (data) {
+    var table = "<thead><tr><th>track</th><th>artist</th><th>album</th><th>assign to</th><th></th></tr></thead>";
+    var i = 0;
+    data.items.forEach(function (item) {
+      var row = "<tr>";
+      row += "<td id=favourite_title_" + i + ">" + item.title + "</td>";
+      row += "<td id=favourite_artist_" + i + ">" + item.artist + "</td>";
+      row += "<td id=favourite_album_" + i + ">" + item.album + "</td>";
+      row += "<td style='display:none;' id=favourite_uri_" + i + ">" + item.uri + "</td>";
+      row += "<td style='display:none;' id=favourite_metadata_" + i + ">" + item.metadata + "</td>";
+      row += "<td style='display:none;' id=favourite_type_" + i + ">" + item.type + "</td>";
+      row += "<td><input id=favourite_selection_" + i + "></td>";
+      var onClickString = 'AssignTrack(' + i + ', "favourite")';
+      row += "<td><button type='button' onclick='" + onClickString + "'>assign</button></td>";
+      row += "</tr>";
+      table += row;
+      i++;
+    });
+    $("#favouriteResults").html(table);
+  });
+}
 function SetConfig(setting, placeholderid) {
   var value = $('#' + placeholderid).val();
   var postData = {
@@ -68,8 +90,8 @@ function Search() {
     $("#sonosResults").html(table);
   });
 
-  var url = "api/spotify/search?q=" + $('#searchString').val();
-  $.get(url, function (data) {
+  var spotifyURL = "api/spotify/search?q=" + $('#searchString').val();
+  $.get(spotifyURL, function (data) {
     $('#spotifyReturned').text("Items returned : " + data.returned);
     $('#spotifyTotal').text("Total results : " + data.total);
     var table = "<thead><tr><th>track</th><th>artist</th><th>album</th><th>assign to</th><th></th></tr></thead>";
@@ -168,7 +190,7 @@ function (closure) {
         return false;
       }
     });
-}
+};
 
 $('#searchString').onEnterKey(
   function () {
@@ -181,3 +203,4 @@ $(document).on({
   ajaxStop: function () { $body.removeClass("loading"); }
 });
 GetConfig("sonos", "sonosip");
+GetFavourites();
