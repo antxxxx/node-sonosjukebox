@@ -57,6 +57,7 @@ function Search() {
           row += "<td id=sonos_album_" + i +">" + item.album +"</td>";
           row += "<td style='display:none;' id=sonos_uri_" + i +">" + item.uri +"</td>";
           row += "<td style='display:none;' id=sonos_metadata_" + i +"></td>";
+          row += "<td style='display:none;' id=sonos_type_" + i +">track</td>";
           row += "<td><input id=sonos_selection_" + i + "></td>";
           var onClickString = 'AssignTrack(' + i + ', "sonos")';
           row += "<td><button type='button' onclick='" + onClickString + "'>assign</button></td>";
@@ -80,6 +81,7 @@ function Search() {
           row += "<td id=spotify_album_" + i +">" + item.album +"</td>";
           row += "<td style='display:none;' id=spotify_uri_" + i +">" + item.uri +"</td>";
           row += "<td style='display:none;' id=spotify_metadata_" + i +"></td>";
+          row += "<td style='display:none;' id=spotify_type_" + i +">track</td>";
           row += "<td><input id=spotify_selection_" + i + "></td>";
           var onClickString = 'AssignTrack(' + i + ', "spotify")';
           row += "<td><button type='button' onclick='" + onClickString + "'>assign</button></td>";
@@ -98,6 +100,7 @@ function AssignTrack(rowSelected, searchType){
   var uri = $('#' + searchType + '_uri_' + rowSelected).text();
   var metadata = $('#' + searchType + '_metadata_' + rowSelected).text();
   var selection = $('#' + searchType + '_selection_' + rowSelected).val().toUpperCase();
+  var type = $('#' + type + '_type_' + rowSelected).val();
   var letterSelection = selection.charAt(0);
   var numberSelection = selection.charAt(1);
   var postData = {
@@ -105,7 +108,8 @@ function AssignTrack(rowSelected, searchType){
     "title": title,
     "artist": artist,
     "uri": uri,
-    "metadata": metadata
+    "metadata": metadata,
+    "type": type
   };
   var url = 'api/jukebox/tracks/' + letterSelection + '/' + numberSelection +'/';
   $.ajax({
