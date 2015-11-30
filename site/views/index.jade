@@ -27,64 +27,98 @@ html(lang="en")
      onclick="SetConfig('sonos', 'sonosip')"
      ) update
      p
-     input#searchString(type=type, value='')
-     button(
-     type='button'
-     onclick="Search()"
-     ) search
-     p Sonos Results
-     #sonosReturned
-     p
-     #sonosTotal
-     table#sonosResults.resultsTable
-     button#sonosPrevious(
-     type='button'
-     hidden='true'
-     ) previous
-     button#sonosNext(
-     type='button'
-     hidden='true'
-     ) next
 
-     p Spotify Results
-     #spotifyReturned
-     p
-     #spotifyTotal
-     table#spotifyResults.resultsTable
-     button#spotifyPrevious(
-     type='button'
-     hidden='true'
-     ) previous
-     button#spotifyNext(
-     type='button'
-     hidden='true'
-     ) next     
-     p Favourites
-     p#Favourites 
-     table#favouriteResults.resultsTable
-     ul.nav.nav-tabs
-      li.letterSelection: a(href="#A") A
-      li.letterSelection: a(href="#B") B
-      li.letterSelection: a(href="#C") C
-      li.letterSelection: a(href="#D") D
-      li.letterSelection: a(href="#E") E
-      li.letterSelection: a(href="#F") F
-      li.letterSelection: a(href="#G") G
-      li.letterSelection: a(href="#H") H
-      li.letterSelection: a(href="#J") J
-      li.letterSelection: a(href="#K") K
-     #DefaultSelection Please select a letter to view selections
-     #LetterSelection
-       table
-         thead
-           tr
-            th selection 
-            th(style = "text-align: center;") artist
-            th(style = "text-align: center;") title
-         - for (var i = 1; i < 9; ++i)
-          +SelectionRow(i)
-         +SelectionRow(0)
+     #outerAccordian.panel-group
+      div(class="panel panel-default")
+        div(class="panel-heading")
+          h4.panel-title
+            a( data-toggle="collapse" data-parent="#outerAccordian" href="#searchAccordian") Search
+        #searchAccordian(class="panel-collapse collapse in")
+          div("class=panel-body")
+            input#searchString(type=type, value='')
+            button(
+            type='button'
+            onclick="Search()"
+            ) search
+     
+            #accordian.panel-group
+              div(class="panel panel-default")
+                div(class="panel-heading")
+                  h4.panel-title
+                    a( data-toggle="collapse" data-parent="#accordian" href="#sonosReturned") Sonos Results
+                #sonosReturned(class="panel-collapse collapse in")
+                  div(class="panel-body")
+                    #sonosTotal
+                    table#sonosResults.resultsTable
+                    #sonosResultPage
+                    button#sonosPrevious(
+                    type='button'
+                    hidden='true'
+                    ) previous
+                    button#sonosNext(
+                    type='button'
+                    hidden='true'
+                    ) next
+            
+              div(class="panel panel-default")
+                div(class="panel-heading")
+                  h4.panel-title
+                    a( data-toggle="collapse" data-parent="#accordian" href="#spotifyReturned") Spotify Results
+                #spotifyReturned(class="panel-collapse collapse")
+                  div(class="panel-body")
+                    #spotifyTotal
+                    table#spotifyResults.resultsTable
+                    #spotifyResultPage
+                    button#spotifyPrevious(
+                    type='button'
+                    hidden='true'
+                    ) previous
+                    button#spotifyNext(
+                    type='button'
+                    hidden='true'
+                    ) next
+        
+      div(class="panel panel-default")
+        div(class="panel-heading")
+          h4.panel-title
+            a( data-toggle="collapse" data-parent="#outerAccordian" href="#Favourites") Favourites
+        #Favourites.collapse(class="panel-collapse collapse")
+          div(class="panel-body")
+            table#favouriteResults.resultsTable
+        
+        
+      div(class="panel panel-default")
+        div(class="panel-heading")
+          h4.panel-title
+            a( data-toggle="collapse" data-parent="#outerAccordian" href="#Assignments") Assignments
+        #Assignments.collapse(class="panel-collapse collapse")
+          div(class="panel-body")
+            #selectionMessage Please select a letter to view selections
+            ul.nav.nav-tabs
+                li.letterSelection: a(href="#A") A
+                li.letterSelection: a(href="#B") B
+                li.letterSelection: a(href="#C") C
+                li.letterSelection: a(href="#D") D
+                li.letterSelection: a(href="#E") E
+                li.letterSelection: a(href="#F") F
+                li.letterSelection: a(href="#G") G
+                li.letterSelection: a(href="#H") H
+                li.letterSelection: a(href="#J") J
+                li.letterSelection: a(href="#K") K
+            #DefaultSelection
+            #LetterSelection
+              table
+                thead
+                  tr
+                    th selection 
+                    th(style = "text-align: center;") artist
+                    th(style = "text-align: center;") title
+                - for (var i = 1; i < 9; ++i)
+                  +SelectionRow(i)
+                +SelectionRow(0)
+  
      .modal
 script(src="//code.jquery.com/jquery-2.1.4.min.js")
+script(src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js")
 script(src="/javascripts/functions.js")
 script(src="/javascripts/main.js")

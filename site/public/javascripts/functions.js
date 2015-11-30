@@ -74,8 +74,10 @@ function UpdateSelection(numberSelection) {
 function SearchSonos(start) {
   var url = "api/sonos/search?q=" + $('#searchString').val() + '&start=' + start;
   $.get(url, function (data) {
-    $('#sonosReturned').text("Items returned : " + data.returned);
+    //$('#sonosReturned').text("Items returned : " + data.returned);
     $('#sonosTotal').text("Total results : " + data.total);
+    var pageMessage = "Page " + ((start/10) +1) +" of " + (Math.floor(data.total/10) + 1);
+    $('#sonosResultPage').text(pageMessage);
     var table = createResultsTable(data, 'sonos');
     $("#sonosResults").html(table);
     if ((data.total - data.returned - start) > 0) {
@@ -102,8 +104,10 @@ function SearchSonos(start) {
 function SearchSpotify(start) {
   var spotifyURL = "api/spotify/search?q=" + $('#searchString').val() + '&start=' + start;
   $.get(spotifyURL, function (data) {
-    $('#spotifyReturned').text("Items returned : " + data.returned);
+    //$('#spotifyReturned').text("Items returned : " + data.returned);
     $('#spotifyTotal').text("Total results : " + data.total);
+    var pageMessage = "Page " + ((start/10) +1) +" of " + (Math.floor(data.total/10) + 1);
+    $('#spotifyResultPage').text(pageMessage);
     var table = createResultsTable(data, 'spotify');
     $("#spotifyResults").html(table);
     if ((data.total - data.returned - start) > 0) {
