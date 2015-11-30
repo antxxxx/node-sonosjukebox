@@ -79,6 +79,7 @@ function playTrack(req, resp) {
     var playing;
     var queuedTrackNumber;
     var playingState;
+    var type;
     async.series([
         // get sonos ip
         function(callback) {
@@ -92,10 +93,11 @@ function playTrack(req, resp) {
         function(callback){
             sonosFunctions.getTrackDetails(req.swagger.params.selectionLetter.value,
             req.swagger.params.selectionNumber.value,
-            function(err, returnedURI, returnedMetadata){
+            function(err, returnedURI, returnedMetadata, returnedType){
                 if (err) return callback(err);
                 uri = returnedURI;
                 metadata = returnedMetadata;
+                type = returnedType;
                 callback();
             });
         },
@@ -138,20 +140,15 @@ function playTrack(req, resp) {
                 startPlaying = true;
             }
             if (startPlaying) {
-                var sonos = new Sonos(sonosIP, 1400);
-                sonos.pause(function(err, data){
-                    if (err) return callback(err);
-                    sonos.selectQueue(function(err, data){
-                        if (err) return callback(err);
-                        sonos.selectTrack(queuedTrackNumber, function(err, data){
-                            if (err) return callback(err);
-                            sonos.play(function(err, data){
-                                if (err) return callback(err);
-                                callback();
-                            });
-                        });
-                    });
-                });                
+                sonosFunctions.startPlayingTrackNow(sonosIP, queuedTrackNumber, function(err, data){
+       				if (err) return callback(err);
+                    callback();
+                });
+            } else if (type === 'stream') {
+                sonosFunctions.startPlayingStream(sonosIP, uri, metadata, function(err, data){
+       				if (err) return callback(err);
+                    callback();
+                });
             }
         }
         ], function(err){
