@@ -61,6 +61,7 @@ function searchSonos(req, resp) {
                 resp.send(response);
 
             } else {
+                data.start = offset;
                 resp.send(data);
             }
         });

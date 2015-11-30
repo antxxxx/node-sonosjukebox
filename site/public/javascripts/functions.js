@@ -71,23 +71,64 @@ function UpdateSelection(numberSelection) {
   });
 }
 
-function Search() {
-  var url = "api/sonos/search?q=" + $('#searchString').val();
+function SearchSonos(start) {
+  var url = "api/sonos/search?q=" + $('#searchString').val() + '&start=' + start;
   $.get(url, function (data) {
     $('#sonosReturned').text("Items returned : " + data.returned);
     $('#sonosTotal').text("Total results : " + data.total);
     var table = createResultsTable(data, 'sonos');
     $("#sonosResults").html(table);
+    if ((data.total - data.returned - start) > 0) {
+      $('#sonosNext').show();
+      $('#sonosNext').off('click');
+      $('#sonosNext').click(function(){
+        SearchSonos(start+10);
+      });
+    } else {
+      $('#sonosNext').hide();
+    }
+    if (start > 0) {
+      $('#sonosPrevious').show();
+      $('#sonosPrevious').off('click');
+      $('#sonosPrevious').click(function(){
+        SearchSonos(start-10);
+      });
+    } else {
+      $('#sonosPrevious').hide();
+    }
   });
+}
 
-  var spotifyURL = "api/spotify/search?q=" + $('#searchString').val();
+function SearchSpotify(start) {
+  var spotifyURL = "api/spotify/search?q=" + $('#searchString').val() + '&start=' + start;
   $.get(spotifyURL, function (data) {
     $('#spotifyReturned').text("Items returned : " + data.returned);
     $('#spotifyTotal').text("Total results : " + data.total);
     var table = createResultsTable(data, 'spotify');
     $("#spotifyResults").html(table);
+    if ((data.total - data.returned - start) > 0) {
+      $('#spotifyNext').show();
+      $('#spotifyNext').off('click');
+      $('#spotifyNext').click(function(){
+        SearchSpotify(start+10);
+      });
+    } else {
+      $('#spotifyNext').hide();
+    }
+    if (start > 0) {
+      $('#spotifyPrevious').show();
+      $('#spotifyPrevious').off('click');
+      $('#spotifyPrevious').click(function(){
+        SearchSpotify(start-10);
+      });
+    } else {
+      $('#spotifyPrevious').hide();      
+    }
   });
-
+}
+function Search() {
+  SearchSonos(0);
+  SearchSpotify(0);
 }
 
 function AssignTrack(rowSelected, searchType) {

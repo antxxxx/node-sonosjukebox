@@ -63,7 +63,8 @@ function searchSpotify(req, resp) {
             var result = {
                 returned: itemsReturned,
                 total: data.body.tracks.total,
-                items: items
+                items: items,
+                start: offset
             };
             resp.send(result);
         }
