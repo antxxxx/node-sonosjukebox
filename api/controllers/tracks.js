@@ -10,6 +10,7 @@ module.exports = {
     getAllTracks: getAllTracks,
     getTrack: getTrack,
     updateTrack: updateTrack,
+    insertTrack: insertTrack,
     playTrack: playTrack,
     getTracksForLetter: getTracksForLetter
 };
@@ -62,7 +63,28 @@ function updateTrack(req, resp) {
         selectionLetter: req.swagger.params.selectionLetter.value,
         selectionNumber: req.swagger.params.selectionNumber.value
     };
-    jukeboxDB.update(query, { $set: insertDoc }, { upsert: true }, function (err, newDoc) {
+    jukeboxDB.update(query, { $set: insertDoc }, function (err, numReplaced) {
+        resp.send(insertDoc);
+        // Callback is optional
+        // newDoc is the newly inserted document, including its _id
+        // newDoc has no key called notToBeSaved since its value was undefined
+    });
+}
+
+function insertTrack(req, resp) {
+    var body = req.swagger.params.body.value;
+    var insertDoc = {
+        type: "jukeboxEntry",
+        selectionLetter: req.swagger.params.selectionLetter.value,
+        selectionNumber: req.swagger.params.selectionNumber.value
+    };
+    insertDoc = _.assign(insertDoc, body);
+    var query = {
+        type: 'jukeboxEntry',
+        selectionLetter: req.swagger.params.selectionLetter.value,
+        selectionNumber: req.swagger.params.selectionNumber.value
+    };
+    jukeboxDB.update(query, insertDoc , { upsert: true }, function (err, numReplaced, upsert) {
         resp.send(insertDoc);
         // Callback is optional
         // newDoc is the newly inserted document, including its _id

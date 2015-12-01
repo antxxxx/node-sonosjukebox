@@ -62,7 +62,7 @@ function UpdateSelection(numberSelection) {
   };
   $.ajax({
     url: '/api/jukebox/tracks/' + letterSelection + '/' + numberSelection + '/',
-    type: "POST",
+    type: "PATCH",
     data: JSON.stringify(postData),
     contentType: "application/json; charset=utf-8",
     dataType: "json",

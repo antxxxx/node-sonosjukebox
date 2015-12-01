@@ -76,6 +76,30 @@ paths:
     post:
       description: Updates specific track
       # used as the method name of the controller
+      operationId: insertTrack
+      parameters:
+        - $ref: '#/parameters/selectionLetter'      
+        - $ref: '#/parameters/selectionNumber'      
+        - name: body
+          in: body
+          description: The data to use for the template
+          required: true
+          schema:
+            $ref: "#/definitions/Track"
+      responses:
+        "201":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/Track"
+        # responses may fall through to errors
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    patch:
+      description: Updates specific track
+      # used as the method name of the controller
       operationId: updateTrack
       parameters:
         - $ref: '#/parameters/selectionLetter'      
