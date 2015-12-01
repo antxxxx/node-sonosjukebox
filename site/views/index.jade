@@ -8,7 +8,7 @@ mixin SelectionRow(number)
     td
       button(
         type='button'
-        onclick="UpdateSelection(" + i +")"
+        onclick="UpdateSelection(" + number +")"
         id='update_'+number
       ) update      
 
@@ -113,7 +113,7 @@ html(lang="en")
                     th selection 
                     th(style = "text-align: center;") artist
                     th(style = "text-align: center;") title
-                - for (var i = 1; i < 9; ++i)
+                - for (var i = 1; i < 10; ++i)
                   +SelectionRow(i)
                 +SelectionRow(0)
 
