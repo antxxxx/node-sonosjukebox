@@ -163,3 +163,35 @@ function AssignTrack(rowSelected, searchType) {
     }
   });
 }
+
+function populateStripsForm(letterSelection, offset, cb) {
+  var url = '/api/jukebox/tracks/' + letterSelection + '/';
+  $.get(url, function (data) {
+    for (i = offset; i < offset+10; i++) {
+      $('#artist_a_' + i ).val("");
+      $('#title_a_' + i ).val("");
+      $('#artist_b_' + i ).val("");
+      $('#title_b_' + i ).val("");
+    }
+    $.each(data, function (index, value) {
+      var i = parseInt(value.selectionNumber) + offset;
+      var aORb = 'a';
+      if ((i % 2) === 0) {
+        aORb = 'b';
+      }
+      $('#artist_' + aORb + '_' + i ).val(value.artist);
+      $('#title_' + aORb + '_' + i ).val(value.title);
+    });
+    cb();
+  });
+}
+
+function printPDF1() {
+  populateStripsForm('A', 0, function(){
+    $( "#record-entry" ).submit();
+  });
+  //populateStripsForm('B', 5);
+  //populateStripsForm('C', 10);
+  //populateStripsForm('D', 15);
+
+}

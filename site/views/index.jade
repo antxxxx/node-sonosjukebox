@@ -116,7 +116,71 @@ html(lang="en")
                 - for (var i = 1; i < 9; ++i)
                   +SelectionRow(i)
                 +SelectionRow(0)
-  
+
+      div(class="panel panel-default")
+        div(class="panel-heading")
+          h4.panel-title
+            a( data-toggle="collapse" data-parent="#outerAccordian" href="#PrintStrips") Print strips
+        #PrintStrips.collapse(class="panel-collapse collapse")
+          div(class="panel-body") There are 40 tracks printed per page - PDF 1 is tracks A1 to D10, PDF 2 is track E1 to H10 and PDF 3 is track I10 to K10 
+          form(name="record-entry" id="record-entry" action="http://ripley/simplestripper/printstrips.php" method="post")
+            table#printStripsOptions(cellspacing="0" cellpadding="3" border="1")
+              thead
+                tr
+                  th Colour
+                  th Background
+                  th Font
+                  th Print size
+              tbody
+                tr
+                  td
+                    input(type="radio" checked="checked" value="red" name="color")
+                    span(style="color: rgb(255,0,0)") Red
+                    br
+                    input(type="radio" checked="checked" value="blue" name="color")
+                    span(style="color: rgb(0,0,255)") Blue
+                    br
+                    input(type="radio" checked="checked" value="purple" name="color")
+                    span(style="color: rgb(128,0,128)") Blue
+                    br
+                    input(type="radio" checked="checked" value="green" name="color")
+                    span(style="color: rgb(0,128,0)") Blue
+                    br
+                  td
+                    input(type="radio" value="TRUE" name="background") 
+                    |Yes
+                    br
+                    input(type="radio" checked="checked" value="" name="background") 
+                    |No
+                    br
+                  td
+                    input(type="radio" value="Times" name="titlefont") 
+                    |Times
+                    br
+                    input(type="radio" value="Helvetica" name="titlefont") 
+                    |Helvetica
+                    br
+                    input(type="radio" checked="checked" value="Courier" name="titlefont") 
+                    |Courier
+                    br
+                  td
+                    input(type="radio" value="small" name="titlesize") 
+                    |Small
+                    br
+                    input(type="radio" checked="checked" value="medium" name="titlesize") 
+                    |Medium
+                    br
+                    input(type="radio" value="large" name="titlesize") 
+                    |Large
+                    br
+            - for (var i = 1; i < 20; ++i)
+              input(type="hidden" id='artist_a_' + i,  name='artista[' + i+ ']')
+              input(type="hidden" id='title_a_' + i, name='titlea[' + i+ ']')
+              input(type="hidden" id='artist_b_' + i, name='artistb[' + i+ ']')
+              input(type="hidden" id='title_b_' + i, name='titleb[' + i+ ']')
+          button(onclick="printPDF1()" name="submit1" id="submit1") Create PDF 1
+          button(onclick="printPDF2()" name="submit" id="submit2") Create PDF 2
+          button(onclick="printPDF3()" name="submit3" id="submit3") Create PDF 3
      .modal
 script(src="//code.jquery.com/jquery-2.1.4.min.js")
 script(src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js")
