@@ -174,9 +174,9 @@ function populateStripsForm(letterSelection, offset, cb) {
       $('#title_b_' + i ).val("");
     }
     $.each(data, function (index, value) {
-      var i = parseInt(value.selectionNumber) + offset;
+      var i = Math.ceil(parseInt(value.selectionNumber)/2) + offset;
       var aORb = 'a';
-      if ((i % 2) === 0) {
+      if ((parseInt(value.selectionNumber) % 2) === 0) {
         aORb = 'b';
       }
       $('#artist_' + aORb + '_' + i ).val(value.artist);
