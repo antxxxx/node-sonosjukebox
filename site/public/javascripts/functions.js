@@ -188,10 +188,12 @@ function populateStripsForm(letterSelection, offset, cb) {
 
 function printPDF1() {
   populateStripsForm('A', 0, function(){
-    $( "#record-entry" ).submit();
+    populateStripsForm('B', 5, function(){
+      populateStripsForm('C', 10, function(){
+        populateStripsForm('D', 15, function(){
+          $( "#record-entry" ).submit();
+        });
+      });
+    });
   });
-  //populateStripsForm('B', 5);
-  //populateStripsForm('C', 10);
-  //populateStripsForm('D', 15);
-
 }
