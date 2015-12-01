@@ -23,7 +23,7 @@ function getAllSettings(req, resp) {
 
 function getSetting(req, resp) {
     var query = {
-        type: 'settings',
+        recordType: 'settings',
         setting: req.swagger.params.setting.value
     };
     var projections = { _id: 0, type: 0 };
@@ -36,13 +36,13 @@ function getSetting(req, resp) {
 function updateSetting(req, resp) {
     var body = req.swagger.params.body.value;
     var insertDoc = {
-        type: "settings",
+        recordType: "settings",
         setting: req.swagger.params.setting.value,
         value: req.swagger.params.body.value.value
     };
     insertDoc = _.assign(insertDoc, body);
     var query = {
-        type: 'settings',
+        recordType: 'settings',
         setting: req.swagger.params.setting.value
     };
     jukeboxDB.update(query, insertDoc, { upsert: true }, function (err, newDoc) {

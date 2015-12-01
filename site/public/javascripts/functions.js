@@ -141,7 +141,7 @@ function AssignTrack(rowSelected, searchType) {
   var uri = $('#' + searchType + '_uri_' + rowSelected).text();
   var metadata = $('#' + searchType + '_metadata_' + rowSelected).text();
   var selection = $('#' + searchType + '_selection_' + rowSelected).val().toUpperCase();
-  var type = $('#' + type + '_type_' + rowSelected).val();
+  var type = $('#' + searchType + '_type_' + rowSelected).text();
   var letterSelection = selection.charAt(0);
   var numberSelection = selection.replace(letterSelection, '');
   var postData = {

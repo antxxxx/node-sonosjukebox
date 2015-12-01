@@ -12,7 +12,7 @@ module.exports = {
 
 function getFavourites(req, resp) {
     var query = {
-        type: 'settings',
+        recordType: 'settings',
         setting: 'sonos'
     };
     var projections = { _id: 0, type: 0 };
@@ -36,7 +36,7 @@ function getFavourites(req, resp) {
 
 function searchSonos(req, resp) {
     var query = {
-        type: 'settings',
+        recordType: 'settings',
         setting: 'sonos'
     };
     var projections = { _id: 0, type: 0 };
@@ -61,8 +61,15 @@ function searchSonos(req, resp) {
                 resp.send(response);
 
             } else {
-                data.start = offset;
-                resp.send(data);
+                var reply = {
+                    "returned": data.returned,
+                    "start": offset,
+                    "total": data.total,
+                    "items": _.map(data.items, function(value, index, collection){
+                            return (_.assign(value, {'type': 'track'}));
+                        })
+                };
+                resp.send(reply);
             }
         });
     });

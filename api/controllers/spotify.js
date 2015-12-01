@@ -55,6 +55,7 @@ function searchSpotify(req, resp) {
                         'albumArtURL': albumArtURL,
                         'album': album,
                         'uri': uri,
+                        'type': 'track',
                         'metaData': didl
                     });
                     itemsReturned++;

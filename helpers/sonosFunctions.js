@@ -17,10 +17,10 @@ module.exports = {
 
 function getSonosIP(callback) {
 	var query = {
-		type: 'settings',
+		recordType: 'settings',
 		setting: 'sonos'
 	};
-	var projections = { _id: 0, type: 0 };
+	var projections = { _id: 0, recordType: 0 };
 	jukeboxDB.findOne(query, projections, function (err, docs) {
 		if (err) return callback(err);
 		var sonosIP = docs.value;
@@ -30,11 +30,11 @@ function getSonosIP(callback) {
 
 function getTrackDetails(selectionLetter, selectionNumber, callback) {
 	var query = {
-		type: 'jukeboxEntry',
+		recordType: 'jukeboxEntry',
 		selectionLetter: selectionLetter,
 		selectionNumber: selectionNumber
 	};
-	var projections = { _id: 0, type: 0, selectionLetter: 0, selectionNumber: 0 };
+	var projections = { _id: 0, recordType: 0, selectionLetter: 0, selectionNumber: 0 };
 	jukeboxDB.findOne(query, projections, function (err, docs) {
 		if (err) return callback(err);
 		var uri = docs.uri;
@@ -53,7 +53,7 @@ function getMediaInfo(sonosIP, callback) {
 
 	sonos.request(sonos.options.endpoints.transport, action, body, responseTag, function (err, data) {
 		if (err) return callback(err);
-		callback(null, data[0].currentURI[0]);
+		callback(null, data[0].CurrentURI[0]);
 	});
 
 }

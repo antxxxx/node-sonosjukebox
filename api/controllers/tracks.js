@@ -17,9 +17,9 @@ module.exports = {
 
 function getAllTracks(req, resp) {
     var query = {
-        type: 'jukeboxEntry'
+        recordType: 'jukeboxEntry'
     };
-    var projections = { _id: 0, type: 0, selectionLetter: 0, selectionNumber: 0 };
+    var projections = { _id: 0, recordType: 0, selectionLetter: 0, selectionNumber: 0 };
     jukeboxDB.find(query, projections, function (err, docs) {
         resp.send(docs);
     });
@@ -27,10 +27,10 @@ function getAllTracks(req, resp) {
 
 function getTracksForLetter(req, resp) {
     var query = {
-        type: 'jukeboxEntry',
+        recordType: 'jukeboxEntry',
         selectionLetter: req.swagger.params.selectionLetter.value
     };
-    var projections = { _id: 0, type: 0 };
+    var projections = { _id: 0, recordType: 0 };
     jukeboxDB.find(query, projections, function (err, docs) {
         resp.send(docs);
     });
@@ -39,11 +39,11 @@ function getTracksForLetter(req, resp) {
 
 function getTrack(req, resp) {
     var query = {
-        type: 'jukeboxEntry',
+        recordType: 'jukeboxEntry',
         selectionLetter: req.swagger.params.selectionLetter.value,
         selectionNumber: req.swagger.params.selectionNumber.value
     };
-    var projections = { _id: 0, type: 0, selectionLetter: 0, selectionNumber: 0 };
+    var projections = { _id: 0, recordType: 0, selectionLetter: 0, selectionNumber: 0 };
     jukeboxDB.findOne(query, projections, function (err, docs) {
         resp.send(docs);
     });
@@ -53,13 +53,13 @@ function getTrack(req, resp) {
 function updateTrack(req, resp) {
     var body = req.swagger.params.body.value;
     var insertDoc = {
-        type: "jukeboxEntry",
+        recordType: "jukeboxEntry",
         selectionLetter: req.swagger.params.selectionLetter.value,
         selectionNumber: req.swagger.params.selectionNumber.value
     };
     insertDoc = _.assign(insertDoc, body);
     var query = {
-        type: 'jukeboxEntry',
+        recordType: 'jukeboxEntry',
         selectionLetter: req.swagger.params.selectionLetter.value,
         selectionNumber: req.swagger.params.selectionNumber.value
     };
@@ -74,13 +74,13 @@ function updateTrack(req, resp) {
 function insertTrack(req, resp) {
     var body = req.swagger.params.body.value;
     var insertDoc = {
-        type: "jukeboxEntry",
+        recordType: "jukeboxEntry",
         selectionLetter: req.swagger.params.selectionLetter.value,
         selectionNumber: req.swagger.params.selectionNumber.value
     };
     insertDoc = _.assign(insertDoc, body);
     var query = {
-        type: 'jukeboxEntry',
+        recordType: 'jukeboxEntry',
         selectionLetter: req.swagger.params.selectionLetter.value,
         selectionNumber: req.swagger.params.selectionNumber.value
     };
