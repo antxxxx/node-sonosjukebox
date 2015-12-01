@@ -12,22 +12,7 @@ $('ul.nav.nav-tabs').each(function () {
     $active.removeClass('active');
     $active = $(this);
     $active.addClass('active');
-    var url = '/api/jukebox/tracks/' + $(this)[0].text + '/';
-    $.get(url, function (data) {
-      $("#LetterSelection").show();
-      $("#DefaultSelection").hide();
-      for (i = 1; i < 11; i++) {
-        $('#artist_' + i).val("");
-        $('#title_' + i).val("");
-        $('#update_' + i).hide();
-      }
-      $.each(data, function (index, value) {
-        var selectionNumber = value.selectionNumber;
-        $('#artist_' + selectionNumber).val(value.artist);
-        $('#title_' + selectionNumber).val(value.title);
-        $('#update_' + selectionNumber).show();
-      });
-    });
+    displayAssignments( $(this)[0].text);
 
     // Prevent the anchor's default click action
     e.preventDefault();

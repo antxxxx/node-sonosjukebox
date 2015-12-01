@@ -160,6 +160,10 @@ function AssignTrack(rowSelected, searchType) {
     contentType: "application/json; charset=utf-8",
     dataType: "json",
     success: function () {
+      var selectedAssignment = $( ".active" )[0].text;
+      if (letterSelection === selectedAssignment) {
+        displayAssignments(letterSelection);
+      }
     }
   });
 }
@@ -228,4 +232,23 @@ function printPDF3() {
       $( "#record-entry" ).submit();
     });
   });
+}
+
+function displayAssignments(letter) {
+  var url = '/api/jukebox/tracks/' + letter + '/';
+  $.get(url, function (data) {
+    $("#LetterSelection").show();
+    $("#DefaultSelection").hide();
+    for (i = 1; i < 11; i++) {
+      $('#artist_' + i).val("");
+      $('#title_' + i).val("");
+      $('#update_' + i).hide();
+    }
+    $.each(data, function (index, value) {
+      var selectionNumber = value.selectionNumber;
+      $('#artist_' + selectionNumber).val(value.artist);
+      $('#title_' + selectionNumber).val(value.title);
+      $('#update_' + selectionNumber).show();
+    });
+  });  
 }
