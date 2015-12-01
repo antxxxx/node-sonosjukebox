@@ -12,7 +12,8 @@ module.exports = {
 	getMediaInfo: getMediaInfo,
 	startPlayingTrackNow: startPlayingTrackNow,
 	startPlayingStream: startPlayingStream,
-	getFavourites: getFavourites
+	getFavourites: getFavourites,
+	queueTrackAndGetCurrentState: queueTrackAndGetCurrentState
 };
 
 function getSonosIP(callback) {
@@ -58,23 +59,86 @@ function getMediaInfo(sonosIP, callback) {
 
 }
 
-function startPlayingStream(sonosIP, uri, metadata, cb) {
-	var sonos = new Sonos(sonosIP, 1400);
-	sonos.getZoneInfo(function (err, data) {
-		if (!err) {
-			var action = '"urn:schemas-upnp-org:service:AVTransport:1#SetAVTransportURI"';
-			var body = '<u:SetAVTransportURI xmlns:u="urn:schemas-upnp-org:service:AVTransport:1"><InstanceID>0</InstanceID><CurrentURI>' + uri + '</CurrentURI><CurrentURIMetaData>' + metadata + '</CurrentURIMetaData></u:SetAVTransportURI>';
-			sonos.request(sonos.options.endpoints.transport, action, body, 'u:SetAVTransportURIResponse', function (err, data) {
-				if (err) return cb(err);
-				if (data[0].$['xmlns:u'] === 'urn:schemas-upnp-org:service:AVTransport:1') {
-					return cb(null, true);
-				} else {
-					return cb(data, false);
-				}
+function queueTrackAndGetCurrentState(sonosIP, uri, metadata, callback){
+	var queuedTrackNumber;
+	var playing;
+	var playingState;
+	async.parallel([
+		// queue the track
+		function (callback) {
+			var sonos = new Sonos(sonosIP, 1400);
+			var options = {
+				uri: uri,
+				metadata: metadata
+			};
+			sonos.queue(options, function (err, res) {
+				if (err) return callback(err);
+				queuedTrackNumber = res[0].FirstTrackNumberEnqueued[0];
+				callback();
 			});
-		} else {
-			return cb(err);
+		},
+		// get current playing track
+		function (callback) {
+			getMediaInfo(sonosIP, function (err, data) {
+				if (err) return callback(err);
+				playing = data;
+				callback();
+			});
+		},
+		// get current state
+		function (callback) {
+			var sonos = new Sonos(sonosIP, 1400);
+			sonos.getCurrentState(function (err, data) {
+				if (err) return callback(err);
+				playingState = data;
+				callback();
+			});
 		}
+		
+	], function(err){
+		if (err) return callback(err);
+		var response = {
+			queuedTrackNumber: queuedTrackNumber,
+			playing: playing,
+			playingState: playingState
+		};
+		callback(null, response);
+	});
+}
+function selectStream(sonosIP, uri, metadata, cb) {
+	var sonos = new Sonos(sonosIP, 1400);
+	var action = '"urn:schemas-upnp-org:service:AVTransport:1#SetAVTransportURI"';
+	var body = '<u:SetAVTransportURI xmlns:u="urn:schemas-upnp-org:service:AVTransport:1"><InstanceID>0</InstanceID><CurrentURI>' + uri + '</CurrentURI><CurrentURIMetaData>' + metadata + '</CurrentURIMetaData></u:SetAVTransportURI>';
+	sonos.request(sonos.options.endpoints.transport, action, body, 'u:SetAVTransportURIResponse', function (err, data) {
+		if (err) return cb(err);
+		if (data[0].$['xmlns:u'] === 'urn:schemas-upnp-org:service:AVTransport:1') {
+			return cb(null, true);
+		} else {
+			return cb(data, false);
+		}
+	});
+}
+
+function startPlayingStream(sonosIP, uri, metadata, callback) {
+	var sonos = new Sonos(sonosIP, 1400);
+	async.series([
+		function (callback) {
+			sonos.pause(function (err, data) {
+				callback(err);
+			});
+		},
+		function (callback) {
+			selectStream(sonosIP, uri, metadata, function (err, data) {
+				callback(err);
+			});
+		},
+		function (callback) {
+			sonos.play(function (err, data) {
+				callback(err);
+			});
+		}
+	], function (err) {
+		callback(err);
 	});
 }
 function startPlayingTrackNow(sonosIP, queuedTrackNumber, callback) {

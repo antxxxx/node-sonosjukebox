@@ -96,11 +96,8 @@ function playTrack(req, resp) {
     var sonosIP;
     var uri;
     var metadata;
-    var playing;
-    var queuedTrackNumber;
-    var playingState;
     var type;
-    async.series([
+    async.parallel([
         // get sonos ip
         function (callback) {
             sonosFunctions.getSonosIP(function (err, data) {
@@ -120,63 +117,30 @@ function playTrack(req, resp) {
                     type = returnedType;
                     callback();
                 });
-        },
-        // queue the track
-        function (callback) {
-            var sonos = new Sonos(sonosIP, 1400);
-            var options = {
-                uri: uri,
-                metadata: metadata
-            };
-            sonos.queue(options, function (err, res) {
-                if (err) return callback(err);
-                queuedTrackNumber = res[0].FirstTrackNumberEnqueued[0];
-                callback();
-            });
-        },
-        // get current playing track
-        function (callback) {
-            sonosFunctions.getMediaInfo(sonosIP, function (err, data) {
-                if (err) return callback(err);
-                playing = data;
-                callback();
-            });
-        },
-        // get current state
-        function (callback) {
-            var sonos = new Sonos(sonosIP, 1400);
-            sonos.getCurrentState(function (err, data) {
-                if (err) return callback(err);
-                playingState = data;
-                callback();
-            });
-        },
-        // work out whether to play or queue track
-        function (callback) {
-            var startPlaying = false;
-            if (
-                (playing.substring(0, 14) !== 'x-rincon-queue') ||
-                (playingState !== 'playing')) {
-                startPlaying = true;
-            }
-            if (startPlaying) {
-                sonosFunctions.startPlayingTrackNow(sonosIP, queuedTrackNumber, function (err, data) {
-                    if (err) return callback(err);
-                    callback();
-                });
-            } else if (type === 'stream') {
-                sonosFunctions.startPlayingStream(sonosIP, uri, metadata, function (err, data) {
-                    if (err) return callback(err);
-                    callback();
-                });
-            }
         }
-    ], function (err) {
+    ], function(err) {
         if (err) {
             resp.send(err);
             return;
         }
-        resp.send(playing);
+        if (type === 'track') {
+            sonosFunctions.queueTrackAndGetCurrentState(sonosIP, uri, metadata, function(err, data){
+                if (err) return resp.send(err);
+                if (data.playingState !== 'playing' || data.playing.substring(0, 14) !== 'x-rincon-queue' ) {
+                    sonosFunctions.startPlayingTrackNow(sonosIP, data.queuedTrackNumber, function (err, data) {
+                        if (err) return resp.send(err);
+                        resp.send(data);
+                    });
+                } else {
+                    resp.send(data);
+                }
+            });
+        } else {
+            // this is the bit where it is not a track
+            sonosFunctions.startPlayingStream(sonosIP, uri, metadata, function (err, data) {
+                if (err) return resp.send(err);
+                resp.send(data);
+            });
+        }
     });
-
 }
