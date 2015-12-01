@@ -143,7 +143,7 @@ function AssignTrack(rowSelected, searchType) {
   var selection = $('#' + searchType + '_selection_' + rowSelected).val().toUpperCase();
   var type = $('#' + type + '_type_' + rowSelected).val();
   var letterSelection = selection.charAt(0);
-  var numberSelection = selection.charAt(1);
+  var numberSelection = selection.replace(letterSelection, '');
   var postData = {
     "selection": selection,
     "title": title,
@@ -167,12 +167,6 @@ function AssignTrack(rowSelected, searchType) {
 function populateStripsForm(letterSelection, offset, cb) {
   var url = '/api/jukebox/tracks/' + letterSelection + '/';
   $.get(url, function (data) {
-    for (i = offset; i < offset+10; i++) {
-      $('#artist_a_' + i ).val("");
-      $('#title_a_' + i ).val("");
-      $('#artist_b_' + i ).val("");
-      $('#title_b_' + i ).val("");
-    }
     $.each(data, function (index, value) {
       var i = Math.ceil(parseInt(value.selectionNumber)/2) + offset;
       var aORb = 'a';
@@ -187,6 +181,12 @@ function populateStripsForm(letterSelection, offset, cb) {
 }
 
 function printPDF1() {
+  for (i = 1; i < 21; i++) {
+    $('#artist_a_' + i ).val("");
+    $('#title_a_' + i ).val("");
+    $('#artist_b_' + i ).val("");
+    $('#title_b_' + i ).val("");
+  }
   populateStripsForm('A', 0, function(){
     populateStripsForm('B', 5, function(){
       populateStripsForm('C', 10, function(){
@@ -194,6 +194,38 @@ function printPDF1() {
           $( "#record-entry" ).submit();
         });
       });
+    });
+  });
+}
+
+function printPDF2() {
+  for (i = 1; i < 21; i++) {
+    $('#artist_a_' + i ).val("");
+    $('#title_a_' + i ).val("");
+    $('#artist_b_' + i ).val("");
+    $('#title_b_' + i ).val("");
+  }
+  populateStripsForm('E', 0, function(){
+    populateStripsForm('F', 5, function(){
+      populateStripsForm('G', 10, function(){
+        populateStripsForm('H', 15, function(){
+          $( "#record-entry" ).submit();
+        });
+      });
+    });
+  });
+}
+
+function printPDF3() {
+  for (i = 1; i < 21; i++) {
+    $('#artist_a_' + i ).val("");
+    $('#title_a_' + i ).val("");
+    $('#artist_b_' + i ).val("");
+    $('#title_b_' + i ).val("");
+  }
+  populateStripsForm('J', 0, function(){
+    populateStripsForm('K', 5, function(){
+      $( "#record-entry" ).submit();
     });
   });
 }

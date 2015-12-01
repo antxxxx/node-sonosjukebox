@@ -16,7 +16,7 @@ $('ul.nav.nav-tabs').each(function () {
     $.get(url, function (data) {
       $("#LetterSelection").show();
       $("#DefaultSelection").hide();
-      for (i = 0; i < 9; i++) {
+      for (i = 1; i < 11; i++) {
         $('#artist_' + i).val("");
         $('#title_' + i).val("");
         $('#update_' + i).hide();

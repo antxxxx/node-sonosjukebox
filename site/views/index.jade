@@ -113,9 +113,8 @@ html(lang="en")
                     th selection 
                     th(style = "text-align: center;") artist
                     th(style = "text-align: center;") title
-                - for (var i = 1; i < 10; ++i)
+                - for (var i = 1; i < 11; ++i)
                   +SelectionRow(i)
-                +SelectionRow(0)
 
       div(class="panel panel-default")
         div(class="panel-heading")
@@ -173,7 +172,7 @@ html(lang="en")
                     input(type="radio" value="large" name="titlesize") 
                     |Large
                     br
-            - for (var i = 1; i < 20; ++i)
+            - for (var i = 1; i < 21; ++i)
               input(type="hidden" id='artist_a_' + i,  name='artista[' + i+ ']')
               input(type="hidden" id='title_a_' + i, name='titlea[' + i+ ']')
               input(type="hidden" id='artist_b_' + i, name='artistb[' + i+ ']')
