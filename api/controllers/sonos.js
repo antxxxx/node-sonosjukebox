@@ -27,13 +27,33 @@ function getFavourites(req, resp, next) {
                 };
                 resp.send(response);
             } else {
-                resp.send(data);
+                var newResponse = {
+                    returned: data.returned,
+                    total: data.total,
+                    items: tidyArray(data.items)
+                };
+                resp.send(newResponse);
             }
         });
     });
 }
 
-
+function tidyArray(items){
+    var newItems = [];
+    var myDefault = {
+        "title": "",
+        "artist": "",
+        'albumArtURL': "",
+        'album': "",
+        'uri': "",
+        'metaData': ""
+    };
+    _.forEach(items, function(item){
+        var newItem = _.defaults(_(item).omit(_.isNull).value(), myDefault);
+        newItems.push(newItem);
+    });
+    return newItems;
+}
 function searchSonos(req, resp, next) {
     var query = {
         recordType: 'settings',
@@ -64,13 +84,14 @@ function searchSonos(req, resp, next) {
                 resp.send(response);
 
             } else {
+                var items = _.map(data.items, function(value, index, collection){
+                            return (_.assign(value, {'type': 'track'}));
+                        });
                 var reply = {
                     "returned": parseInt(data.returned),
                     "start": offset,
                     "total": parseInt(data.total),
-                    "items": _.map(data.items, function(value, index, collection){
-                            return (_.assign(value, {'type': 'track'}));
-                        })
+                    "items": tidyArray(items)
                 };
                 resp.send(reply);
             }

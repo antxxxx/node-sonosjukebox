@@ -214,7 +214,7 @@ function getFavourites(sonosIP, callback) {
 					'metaData': util.isArray(item['r:resMD']) ? item['r:resMD'][0] : null,
 					'type': type
 				};
-				itemToPush = _(itemToPush).omit(_.isUndefined).omit(_.isNull).value();
+//				itemToPush = _(itemToPush).omit(_.isUndefined).omit(_.isNull).value();
 				items.push(itemToPush);
 			});
 			var result = {
