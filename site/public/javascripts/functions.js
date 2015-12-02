@@ -19,7 +19,7 @@ function createResultsTable(data, tableType) {
     row += "<td id=" + tableType + "_artist_" + i + ">" + item.artist + "</td>";
     row += "<td id=" + tableType + "_album_" + i + ">" + item.album + "</td>";
     row += "<td style='display:none;' id=" + tableType + "_uri_" + i + ">" + item.uri + "</td>";
-    row += "<td style='display:none;' id=" + tableType + "_metadata_" + i + ">" + item.metadata + "</td>";
+    row += "<td style='display:none;' id=" + tableType + "_metadata_" + i + ">" + encodeURI(item.metaData) + "</td>";
     row += "<td style='display:none;' id=" + tableType + "_type_" + i + ">" + item.type + "</td>";
     row += "<td><input id=" + tableType + "_selection_" + i + " size='4'></td>";
     var onClickString = 'AssignTrack(' + i + ', "' + tableType + '")';
