@@ -11,7 +11,7 @@ module.exports = {
 
 function getAllSettings(req, resp) {
     var query = {
-        type: 'settings'
+        recordType: 'settings'
     };
     var projections = { _id: 0, type: 0 };
     jukeboxDB.find(query, projections, function (err, docs) {
