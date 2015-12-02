@@ -211,13 +211,13 @@ function getFavourites(sonosIP, callback) {
 					'albumArtURL': albumArtURL,
 					'album': util.isArray(item['upnp:album']) ? item['upnp:album'][0] : null,
 					'uri': util.isArray(item.res) ? item.res[0]._ : null,
-					'metadata': util.isArray(item['r:resMD']) ? item['r:resMD'][0] : null,
+					'metaData': util.isArray(item['r:resMD']) ? item['r:resMD'][0] : null,
 					'type': type
 				});
 			});
 			var result = {
-				returned: data.NumberReturned,
-				total: data.TotalMatches,
+				returned: parseInt(data.NumberReturned),
+				total: parseInt(data.TotalMatches),
 				items: items
 			};
 			return callback(null, result);
