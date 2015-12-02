@@ -150,15 +150,18 @@ function playTrack(req, resp, next) {
                 if (err) {
                     return next(err);
                 }
+                var response = {
+                    enquedTrackNumber: parseInt(data.queuedTrackNumber)
+                };
                 if (data.playingState !== 'playing' || data.playing.substring(0, 14) !== 'x-rincon-queue' ) {
                     sonosFunctions.startPlayingTrackNow(sonosIP, data.queuedTrackNumber, function (err, data) {
                         if (err) {
                             return next(err);
                         }
-                        resp.send(data);
+                        resp.status(202).send(response);
                     });
                 } else {
-                    resp.send(data);
+                    resp.status(202).send(response);
                 }
             });
         } else {
@@ -167,8 +170,12 @@ function playTrack(req, resp, next) {
                 if (err) {
                     return next(err);
                 }
-                resp.send(data);
+                var response = {
+                    enquedTrackNumber: 0
+                };                
+                resp.status(202).send(response);
             });
         }
     });
 }
+

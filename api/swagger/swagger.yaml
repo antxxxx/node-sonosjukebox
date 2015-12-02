@@ -339,7 +339,7 @@ definitions:
   PlayResponse:
     properties:
       enquedTrackNumber:
-        type: string
+        type: number
 
   ErrorResponse:
     required:

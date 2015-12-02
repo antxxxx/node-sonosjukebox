@@ -108,7 +108,7 @@ function queueTrackAndGetCurrentState(sonosIP, uri, metaData, callback){
 function selectStream(sonosIP, uri, metaData, cb) {
 	var sonos = new Sonos(sonosIP, 1400);
 	var action = '"urn:schemas-upnp-org:service:AVTransport:1#SetAVTransportURI"';
-	var body = '<u:SetAVTransportURI xmlns:u="urn:schemas-upnp-org:service:AVTransport:1"><InstanceID>0</InstanceID><CurrentURI>' + uri + '</CurrentURI><CurrentURIMetaData>' + metaData + '</CurrentURIMetaData></u:SetAVTransportURI>';
+	var body = '<u:SetAVTransportURI xmlns:u="urn:schemas-upnp-org:service:AVTransport:1"><InstanceID>0</InstanceID><CurrentURI>' + htmlEntities(uri) + '</CurrentURI><CurrentURIMetaData>' + htmlEntities(metaData) + '</CurrentURIMetaData></u:SetAVTransportURI>';
 	sonos.request(sonos.options.endpoints.transport, action, body, 'u:SetAVTransportURIResponse', function (err, data) {
 		if (err) return cb(err);
 		if (data[0].$['xmlns:u'] === 'urn:schemas-upnp-org:service:AVTransport:1') {
@@ -226,3 +226,8 @@ function getFavourites(sonosIP, callback) {
 		});
 	});
 }
+
+
+var htmlEntities = function (str) {
+  return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+};
