@@ -299,14 +299,35 @@ definitions:
         type: string
       artist:
         type: string
+      albumArtURL:
+        type: string
+      album:
+        type: string
       uri:
         type: string
-      metadata:
+      metaData:
         type: string
+      type:
+        type: string
+    required:
+      - title
+      - uri
+      - type
   Tracks:
-    type: array
-    items:
-      $ref: '#/definitions/Track'      
+    properties:
+      returned:
+        type: number
+      total:
+        type: number
+      start:
+        type: number
+      items:
+        type: array
+        items:
+          $ref: '#/definitions/Track'      
+    required:
+      - returned
+      - total
   Setting:
     properties:
       setting:

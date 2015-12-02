@@ -205,7 +205,7 @@ function getFavourites(sonosIP, callback) {
 				if (protocol === 'x-sonosapi-stream:*:*:*' || protocol.substr(0, 17) === 'x-rincon-mp3radio') {
 					type = 'stream';
 				}
-				items.push({
+				var itemToPush = {
 					'title': util.isArray(item['dc:title']) ? item['dc:title'][0] : null,
 					'artist': util.isArray(item['dc:creator']) ? item['dc:creator'][0] : null,
 					'albumArtURL': albumArtURL,
@@ -213,7 +213,9 @@ function getFavourites(sonosIP, callback) {
 					'uri': util.isArray(item.res) ? item.res[0]._ : null,
 					'metaData': util.isArray(item['r:resMD']) ? item['r:resMD'][0] : null,
 					'type': type
-				});
+				};
+				itemToPush = _(itemToPush).omit(_.isUndefined).omit(_.isNull).value();
+				items.push(itemToPush);
 			});
 			var result = {
 				returned: parseInt(data.NumberReturned),

@@ -21,8 +21,8 @@ function getFavourites(req, resp, next) {
         sonosFunctions.getFavourites(sonosIP, function (err, data) {
             if (err) {
                 var response = {
-                    "returned": "0",
-                    "total": "0",
+                    "returned": 0,
+                    "total": 0,
                     "items": []
                 };
                 resp.send(response);
@@ -57,17 +57,17 @@ function searchSonos(req, resp, next) {
         sonos.searchMusicLibrary('tracks', req.swagger.params.q.value, opts, function (err, data) {
             if (err) {
                 var response = {
-                    "returned": "0",
-                    "total": "0",
+                    "returned": 0,
+                    "total": 0,
                     "items": []
                 };
                 resp.send(response);
 
             } else {
                 var reply = {
-                    "returned": data.returned,
+                    "returned": parseInt(data.returned),
                     "start": offset,
-                    "total": data.total,
+                    "total": parseInt(data.total),
                     "items": _.map(data.items, function(value, index, collection){
                             return (_.assign(value, {'type': 'track'}));
                         })
