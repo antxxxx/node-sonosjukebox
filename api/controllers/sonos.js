@@ -89,7 +89,7 @@ function searchSonos(req, resp, next) {
                         });
                 var reply = {
                     "returned": parseInt(data.returned),
-                    "start": offset,
+                    "start": parseInt(offset),
                     "total": parseInt(data.total),
                     "items": tidyArray(items)
                 };

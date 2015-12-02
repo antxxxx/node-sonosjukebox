@@ -66,7 +66,7 @@ function searchSpotify(req, resp) {
                 returned: itemsReturned,
                 total: data.body.tracks.total,
                 items: items,
-                start: offset
+                start: parseInt(offset)
             };
             resp.send(result);
         }

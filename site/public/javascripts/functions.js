@@ -125,7 +125,7 @@ function SearchSonos(start) {
 function SearchSpotify(start) {
   var spotifyURL = "api/spotify/search?q=" + $('#searchString').val() + '&start=' + start;
   $.get(spotifyURL)
-    .sucess(function (data) {
+    .success(function (data) {
       //$('#spotifyReturned').text("Items returned : " + data.returned);
       $('#spotifyTotal').text("Total results : " + data.total);
       var pageMessage = "Page " + ((start / 10) + 1) + " of " + (Math.floor(data.total / 10) + 1);
