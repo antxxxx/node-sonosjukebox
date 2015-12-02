@@ -13,7 +13,7 @@ function getAllSettings(req, resp) {
     var query = {
         recordType: 'settings'
     };
-    var projections = { _id: 0, type: 0 };
+    var projections = { _id: 0, recordType: 0 };
     jukeboxDB.find(query, projections, function (err, docs) {
         resp.send(docs);
     });
@@ -26,7 +26,7 @@ function getSetting(req, resp, next) {
         recordType: 'settings',
         setting: req.swagger.params.setting.value
     };
-    var projections = { _id: 0, type: 0 };
+    var projections = { _id: 0, recordType: 0 };
     jukeboxDB.findOne(query, projections, function (err, docs) {
         if (err) {
             return next(err);
