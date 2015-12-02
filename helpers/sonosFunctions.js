@@ -39,9 +39,9 @@ function getTrackDetails(selectionLetter, selectionNumber, callback) {
 	jukeboxDB.findOne(query, projections, function (err, docs) {
 		if (err) return callback(err);
 		var uri = docs.uri;
-		var metadata = docs.metadata;
+		var metaData = docs.metaData;
 		var type = docs.type;
-		callback(null, uri, metadata, type);
+		callback(null, uri, metaData, type);
 	});
 
 }
@@ -59,7 +59,7 @@ function getMediaInfo(sonosIP, callback) {
 
 }
 
-function queueTrackAndGetCurrentState(sonosIP, uri, metadata, callback){
+function queueTrackAndGetCurrentState(sonosIP, uri, metaData, callback){
 	var queuedTrackNumber;
 	var playing;
 	var playingState;
@@ -69,7 +69,7 @@ function queueTrackAndGetCurrentState(sonosIP, uri, metadata, callback){
 			var sonos = new Sonos(sonosIP, 1400);
 			var options = {
 				uri: uri,
-				metadata: metadata
+				metadata: metaData
 			};
 			sonos.queue(options, function (err, res) {
 				if (err) return callback(err);
@@ -105,10 +105,10 @@ function queueTrackAndGetCurrentState(sonosIP, uri, metadata, callback){
 		callback(null, response);
 	});
 }
-function selectStream(sonosIP, uri, metadata, cb) {
+function selectStream(sonosIP, uri, metaData, cb) {
 	var sonos = new Sonos(sonosIP, 1400);
 	var action = '"urn:schemas-upnp-org:service:AVTransport:1#SetAVTransportURI"';
-	var body = '<u:SetAVTransportURI xmlns:u="urn:schemas-upnp-org:service:AVTransport:1"><InstanceID>0</InstanceID><CurrentURI>' + uri + '</CurrentURI><CurrentURIMetaData>' + metadata + '</CurrentURIMetaData></u:SetAVTransportURI>';
+	var body = '<u:SetAVTransportURI xmlns:u="urn:schemas-upnp-org:service:AVTransport:1"><InstanceID>0</InstanceID><CurrentURI>' + uri + '</CurrentURI><CurrentURIMetaData>' + metaData + '</CurrentURIMetaData></u:SetAVTransportURI>';
 	sonos.request(sonos.options.endpoints.transport, action, body, 'u:SetAVTransportURIResponse', function (err, data) {
 		if (err) return cb(err);
 		if (data[0].$['xmlns:u'] === 'urn:schemas-upnp-org:service:AVTransport:1') {
@@ -119,7 +119,7 @@ function selectStream(sonosIP, uri, metadata, cb) {
 	});
 }
 
-function startPlayingStream(sonosIP, uri, metadata, callback) {
+function startPlayingStream(sonosIP, uri, metaData, callback) {
 	var sonos = new Sonos(sonosIP, 1400);
 	async.series([
 		function (callback) {
@@ -128,7 +128,7 @@ function startPlayingStream(sonosIP, uri, metadata, callback) {
 			});
 		},
 		function (callback) {
-			selectStream(sonosIP, uri, metadata, function (err, data) {
+			selectStream(sonosIP, uri, metaData, function (err, data) {
 				callback(err);
 			});
 		},

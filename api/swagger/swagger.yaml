@@ -111,7 +111,7 @@ paths:
           schema:
             $ref: "#/definitions/Track"
       responses:
-        "201":
+        "200":
           description: Success
           schema:
             # a pointer to a definition
@@ -311,8 +311,6 @@ definitions:
         type: string
     required:
       - title
-      - uri
-      - type
   Tracks:
     properties:
       returned:

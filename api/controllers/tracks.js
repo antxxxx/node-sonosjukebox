@@ -54,6 +54,13 @@ function getTrack(req, resp, next) {
         if (err) {
             return next(err);
         }
+        if (docs === null) {
+            docs = {
+                title: "",
+                uri: "",
+                type: ""
+            };
+        }
         resp.send(docs);
     });
 }
@@ -85,7 +92,7 @@ function updateTrack(req, resp, next) {
 
 function insertTrack(req, resp, next) {
     var body = req.swagger.params.body.value;
-    body.metadata = decodeURI(body.metadata);
+    body.metaData = decodeURI(body.metaData);
     var insertDoc = {
         recordType: "jukeboxEntry",
         selectionLetter: req.swagger.params.selectionLetter.value,
@@ -101,7 +108,7 @@ function insertTrack(req, resp, next) {
         if (err) {
             return next(err);
         }
-        resp.send(insertDoc);
+        resp.status(201).send(insertDoc);
         // Callback is optional
         // newDoc is the newly inserted document, including its _id
         // newDoc has no key called notToBeSaved since its value was undefined
@@ -111,7 +118,7 @@ function insertTrack(req, resp, next) {
 function playTrack(req, resp, next) {
     var sonosIP;
     var uri;
-    var metadata;
+    var metaData;
     var type;
     async.parallel([
         // get sonos ip
@@ -129,7 +136,7 @@ function playTrack(req, resp, next) {
                 function (err, returnedURI, returnedMetadata, returnedType) {
                     if (err) return callback(err);
                     uri = returnedURI;
-                    metadata = returnedMetadata;
+                    metaData = returnedMetadata;
                     type = returnedType;
                     callback();
                 });
@@ -139,7 +146,7 @@ function playTrack(req, resp, next) {
             return next(err);
         }
         if (type === 'track') {
-            sonosFunctions.queueTrackAndGetCurrentState(sonosIP, uri, metadata, function(err, data){
+            sonosFunctions.queueTrackAndGetCurrentState(sonosIP, uri, metaData, function(err, data){
                 if (err) {
                     return next(err);
                 }
@@ -156,7 +163,7 @@ function playTrack(req, resp, next) {
             });
         } else {
             // this is the bit where it is not a track
-            sonosFunctions.startPlayingStream(sonosIP, uri, metadata, function (err, data) {
+            sonosFunctions.startPlayingStream(sonosIP, uri, metaData, function (err, data) {
                 if (err) {
                     return next(err);
                 }

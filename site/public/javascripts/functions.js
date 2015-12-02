@@ -24,7 +24,7 @@ function createResultsTable(data, tableType) {
     row += "<td id=" + tableType + "_artist_" + i + ">" + item.artist + "</td>";
     row += "<td id=" + tableType + "_album_" + i + ">" + item.album + "</td>";
     row += "<td style='display:none;' id=" + tableType + "_uri_" + i + ">" + item.uri + "</td>";
-    row += "<td style='display:none;' id=" + tableType + "_metadata_" + i + ">" + encodeURI(item.metaData) + "</td>";
+    row += "<td style='display:none;' id=" + tableType + "_metaData_" + i + ">" + encodeURI(item.metaData) + "</td>";
     row += "<td style='display:none;' id=" + tableType + "_type_" + i + ">" + item.type + "</td>";
     row += "<td><input id=" + tableType + "_selection_" + i + " size='4'></td>";
     var onClickString = 'AssignTrack(' + i + ', "' + tableType + '")';
@@ -166,7 +166,7 @@ function AssignTrack(rowSelected, searchType) {
   var artist = $('#' + searchType + '_artist_' + rowSelected).text();
   var title = $('#' + searchType + '_title_' + rowSelected).text();
   var uri = $('#' + searchType + '_uri_' + rowSelected).text();
-  var metadata = $('#' + searchType + '_metadata_' + rowSelected).text();
+  var metaData = $('#' + searchType + '_metaData_' + rowSelected).text();
   var selection = $('#' + searchType + '_selection_' + rowSelected).val().toUpperCase();
   var type = $('#' + searchType + '_type_' + rowSelected).text();
   var letterSelection = selection.charAt(0);
@@ -176,7 +176,7 @@ function AssignTrack(rowSelected, searchType) {
     "title": title,
     "artist": artist,
     "uri": uri,
-    "metadata": metadata,
+    "metaData": metaData,
     "type": type
   };
   var url = 'api/jukebox/tracks/' + letterSelection + '/' + numberSelection + '/';
