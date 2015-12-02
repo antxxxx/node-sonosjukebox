@@ -1,17 +1,22 @@
 function GetConfig(setting, placeholderid) {
-  $.get('/api/jukebox/settings/' + setting, function (data) {
-    $('#' + placeholderid).val(data.value);
-  });
+  $.get('/api/jukebox/settings/' + setting)
+    .success(function (data) {
+      $('#' + placeholderid).val(data.value);
+    })
+    .error(function (jqXHR, textStatus, errorThrown) {
+      var errorMessage = 'Error response. Status code : ' + jqXHR.status + '. Resopnse : ' + jqXHR.responseText;
+      $('#errorText').text(errorMessage);
+    });
 }
 
 function createResultsTable(data, tableType) {
   var table = "<thead><tr>" +
-  "<th>track</th>" +
-  "<th>artist</th>" +
-  "<th>album</th>" + 
-  "<th><div style='width: 75px' >assign to</div></th>" +
-  "<th><div style='width: 75px' >assign to</div></th>" +
-  "</tr></thead>";
+    "<th>track</th>" +
+    "<th>artist</th>" +
+    "<th>album</th>" +
+    "<th><div style='width: 75px' >assign to</div></th>" +
+    "<th><div style='width: 75px' >assign to</div></th>" +
+    "</tr></thead>";
   var i = 0;
   data.items.forEach(function (item) {
     var row = "<tr>";
@@ -28,14 +33,19 @@ function createResultsTable(data, tableType) {
     table += row;
     i++;
   });
-  return (table);  
+  return (table);
 }
 
 function GetFavourites() {
-  $.get('/api/sonos/favourites', function (data) {
-    var table = createResultsTable(data, 'favourite');
-    $("#favouriteResults").html(table);
-  });
+  $.get('/api/sonos/favourites')
+    .success(function (data) {
+      var table = createResultsTable(data, 'favourite');
+      $("#favouriteResults").html(table);
+    })
+    .error(function (jqXHR, textStatus, errorThrown) {
+      var errorMessage = 'Error response. Status code : ' + jqXHR.status + '. Resopnse : ' + jqXHR.responseText;
+      $('#errorText').text(errorMessage);
+    });
 }
 function SetConfig(setting, placeholderid) {
   var value = $('#' + placeholderid).val();
@@ -48,7 +58,10 @@ function SetConfig(setting, placeholderid) {
     data: JSON.stringify(postData),
     contentType: "application/json; charset=utf-8",
     dataType: "json",
-    success: function () {
+    success: function () { },
+    error: function (jqXHR, textStatus, errorThrown) {
+      var errorMessage = 'Error response. Status code : ' + jqXHR.status + '. Resopnse : ' + jqXHR.responseText;
+      $('#errorText').text(errorMessage);
     }
   });
 }
@@ -66,69 +79,83 @@ function UpdateSelection(numberSelection) {
     data: JSON.stringify(postData),
     contentType: "application/json; charset=utf-8",
     dataType: "json",
-    success: function () {
+    success: function () { },
+    error: function (jqXHR, textStatus, errorThrown) {
+      var errorMessage = 'Error response. Status code : ' + jqXHR.status + '. Resopnse : ' + jqXHR.responseText;
+      $('#errorText').text(errorMessage);
     }
   });
 }
 
 function SearchSonos(start) {
   var url = "api/sonos/search?q=" + $('#searchString').val() + '&start=' + start;
-  $.get(url, function (data) {
-    //$('#sonosReturned').text("Items returned : " + data.returned);
-    $('#sonosTotal').text("Total results : " + data.total);
-    var pageMessage = "Page " + ((start/10) +1) +" of " + (Math.floor(data.total/10) + 1);
-    $('#sonosResultPage').text(pageMessage);
-    var table = createResultsTable(data, 'sonos');
-    $("#sonosResults").html(table);
-    if ((data.total - data.returned - start) > 0) {
-      $('#sonosNext').show();
-      $('#sonosNext').off('click');
-      $('#sonosNext').click(function(){
-        SearchSonos(start+10);
-      });
-    } else {
-      $('#sonosNext').hide();
-    }
-    if (start > 0) {
-      $('#sonosPrevious').show();
-      $('#sonosPrevious').off('click');
-      $('#sonosPrevious').click(function(){
-        SearchSonos(start-10);
-      });
-    } else {
-      $('#sonosPrevious').hide();
-    }
-  });
+  $.get(url)
+    .success(function (data) {
+      //$('#sonosReturned').text("Items returned : " + data.returned);
+      $('#sonosTotal').text("Total results : " + data.total);
+      var pageMessage = "Page " + ((start / 10) + 1) + " of " + (Math.floor(data.total / 10) + 1);
+      $('#sonosResultPage').text(pageMessage);
+      var table = createResultsTable(data, 'sonos');
+      $("#sonosResults").html(table);
+      if ((data.total - data.returned - start) > 0) {
+        $('#sonosNext').show();
+        $('#sonosNext').off('click');
+        $('#sonosNext').click(function () {
+          SearchSonos(start + 10);
+        });
+      } else {
+        $('#sonosNext').hide();
+      }
+      if (start > 0) {
+        $('#sonosPrevious').show();
+        $('#sonosPrevious').off('click');
+        $('#sonosPrevious').click(function () {
+          SearchSonos(start - 10);
+        });
+      } else {
+        $('#sonosPrevious').hide();
+      }
+    })
+    .error(function (jqXHR, textStatus, errorThrown) {
+      var errorMessage = 'Error response. Status code : ' + jqXHR.status + '. Resopnse : ' + jqXHR.responseText;
+      $('#errorText').text(errorMessage);
+    });
 }
 
 function SearchSpotify(start) {
   var spotifyURL = "api/spotify/search?q=" + $('#searchString').val() + '&start=' + start;
-  $.get(spotifyURL, function (data) {
-    //$('#spotifyReturned').text("Items returned : " + data.returned);
-    $('#spotifyTotal').text("Total results : " + data.total);
-    var pageMessage = "Page " + ((start/10) +1) +" of " + (Math.floor(data.total/10) + 1);
-    $('#spotifyResultPage').text(pageMessage);
-    var table = createResultsTable(data, 'spotify');
-    $("#spotifyResults").html(table);
-    if ((data.total - data.returned - start) > 0) {
-      $('#spotifyNext').show();
-      $('#spotifyNext').off('click');
-      $('#spotifyNext').click(function(){
-        SearchSpotify(start+10);
-      });
-    } else {
-      $('#spotifyNext').hide();
-    }
-    if (start > 0) {
-      $('#spotifyPrevious').show();
-      $('#spotifyPrevious').off('click');
-      $('#spotifyPrevious').click(function(){
-        SearchSpotify(start-10);
-      });
-    } else {
-      $('#spotifyPrevious').hide();      
-    }
-  });
+  $.get(spotifyURL)
+    .sucess(function (data) {
+      //$('#spotifyReturned').text("Items returned : " + data.returned);
+      $('#spotifyTotal').text("Total results : " + data.total);
+      var pageMessage = "Page " + ((start / 10) + 1) + " of " + (Math.floor(data.total / 10) + 1);
+      $('#spotifyResultPage').text(pageMessage);
+      var table = createResultsTable(data, 'spotify');
+      $("#spotifyResults").html(table);
+      if ((data.total - data.returned - start) > 0) {
+        $('#spotifyNext').show();
+        $('#spotifyNext').off('click');
+        $('#spotifyNext').click(function () {
+          SearchSpotify(start + 10);
+        });
+      } else {
+        $('#spotifyNext').hide();
+      }
+      if (start > 0) {
+        $('#spotifyPrevious').show();
+        $('#spotifyPrevious').off('click');
+        $('#spotifyPrevious').click(function () {
+          SearchSpotify(start - 10);
+        });
+      } else {
+        $('#spotifyPrevious').hide();
+      }
+    })
+    .error(function (jqXHR, textStatus, errorThrown) {
+      var errorMessage = 'Error response. Status code : ' + jqXHR.status + '. Resopnse : ' + jqXHR.responseText;
+      $('#errorText').text(errorMessage);
+    });
+
 }
 function Search() {
   SearchSonos(0);
@@ -160,42 +187,52 @@ function AssignTrack(rowSelected, searchType) {
     contentType: "application/json; charset=utf-8",
     dataType: "json",
     success: function () {
-      var selectedAssignment = $( ".active" )[0].text;
+      var selectedAssignment = $(".active")[0].text;
       if (letterSelection === selectedAssignment) {
         displayAssignments(letterSelection);
       }
+    },
+    error: function (jqXHR, textStatus, errorThrown) {
+      var errorMessage = 'Error response. Status code : ' + jqXHR.status + '. Resopnse : ' + jqXHR.responseText;
+      $('#errorText').text(errorMessage);
     }
   });
 }
 
 function populateStripsForm(letterSelection, offset, cb) {
   var url = '/api/jukebox/tracks/' + letterSelection + '/';
-  $.get(url, function (data) {
-    $.each(data, function (index, value) {
-      var i = Math.ceil(parseInt(value.selectionNumber)/2) + offset;
-      var aORb = 'a';
-      if ((parseInt(value.selectionNumber) % 2) === 0) {
-        aORb = 'b';
-      }
-      $('#artist_' + aORb + '_' + i ).val(value.artist);
-      $('#title_' + aORb + '_' + i ).val(value.title);
+  $.get(url)
+    .success(function (data) {
+      $.each(data, function (index, value) {
+        var i = Math.ceil(parseInt(value.selectionNumber) / 2) + offset;
+        var aORb = 'a';
+        if ((parseInt(value.selectionNumber) % 2) === 0) {
+          aORb = 'b';
+        }
+        $('#artist_' + aORb + '_' + i).val(value.artist);
+        $('#title_' + aORb + '_' + i).val(value.title);
+      });
+      cb();
+    })
+    .error(function (jqXHR, textStatus, errorThrown) {
+      var errorMessage = 'Error response. Status code : ' + jqXHR.status + '. Resopnse : ' + jqXHR.responseText;
+      $('#errorText').text(errorMessage);
+      cb();
     });
-    cb();
-  });
 }
 
 function printPDF1() {
   for (i = 1; i < 21; i++) {
-    $('#artist_a_' + i ).val("");
-    $('#title_a_' + i ).val("");
-    $('#artist_b_' + i ).val("");
-    $('#title_b_' + i ).val("");
+    $('#artist_a_' + i).val("");
+    $('#title_a_' + i).val("");
+    $('#artist_b_' + i).val("");
+    $('#title_b_' + i).val("");
   }
-  populateStripsForm('A', 0, function(){
-    populateStripsForm('B', 5, function(){
-      populateStripsForm('C', 10, function(){
-        populateStripsForm('D', 15, function(){
-          $( "#record-entry" ).submit();
+  populateStripsForm('A', 0, function () {
+    populateStripsForm('B', 5, function () {
+      populateStripsForm('C', 10, function () {
+        populateStripsForm('D', 15, function () {
+          $("#record-entry").submit();
         });
       });
     });
@@ -204,16 +241,16 @@ function printPDF1() {
 
 function printPDF2() {
   for (i = 1; i < 21; i++) {
-    $('#artist_a_' + i ).val("");
-    $('#title_a_' + i ).val("");
-    $('#artist_b_' + i ).val("");
-    $('#title_b_' + i ).val("");
+    $('#artist_a_' + i).val("");
+    $('#title_a_' + i).val("");
+    $('#artist_b_' + i).val("");
+    $('#title_b_' + i).val("");
   }
-  populateStripsForm('E', 0, function(){
-    populateStripsForm('F', 5, function(){
-      populateStripsForm('G', 10, function(){
-        populateStripsForm('H', 15, function(){
-          $( "#record-entry" ).submit();
+  populateStripsForm('E', 0, function () {
+    populateStripsForm('F', 5, function () {
+      populateStripsForm('G', 10, function () {
+        populateStripsForm('H', 15, function () {
+          $("#record-entry").submit();
         });
       });
     });
@@ -222,33 +259,38 @@ function printPDF2() {
 
 function printPDF3() {
   for (i = 1; i < 21; i++) {
-    $('#artist_a_' + i ).val("");
-    $('#title_a_' + i ).val("");
-    $('#artist_b_' + i ).val("");
-    $('#title_b_' + i ).val("");
+    $('#artist_a_' + i).val("");
+    $('#title_a_' + i).val("");
+    $('#artist_b_' + i).val("");
+    $('#title_b_' + i).val("");
   }
-  populateStripsForm('J', 0, function(){
-    populateStripsForm('K', 5, function(){
-      $( "#record-entry" ).submit();
+  populateStripsForm('J', 0, function () {
+    populateStripsForm('K', 5, function () {
+      $("#record-entry").submit();
     });
   });
 }
 
 function displayAssignments(letter) {
   var url = '/api/jukebox/tracks/' + letter + '/';
-  $.get(url, function (data) {
-    $("#LetterSelection").show();
-    $("#DefaultSelection").hide();
-    for (i = 1; i < 11; i++) {
-      $('#artist_' + i).val("");
-      $('#title_' + i).val("");
-      $('#update_' + i).hide();
-    }
-    $.each(data, function (index, value) {
-      var selectionNumber = value.selectionNumber;
-      $('#artist_' + selectionNumber).val(value.artist);
-      $('#title_' + selectionNumber).val(value.title);
-      $('#update_' + selectionNumber).show();
+  $.get(url)
+    .success(function (data) {
+      $("#LetterSelection").show();
+      $("#DefaultSelection").hide();
+      for (i = 1; i < 11; i++) {
+        $('#artist_' + i).val("");
+        $('#title_' + i).val("");
+        $('#update_' + i).hide();
+      }
+      $.each(data, function (index, value) {
+        var selectionNumber = value.selectionNumber;
+        $('#artist_' + selectionNumber).val(value.artist);
+        $('#title_' + selectionNumber).val(value.title);
+        $('#update_' + selectionNumber).show();
+      });
+    })
+    .error(function (jqXHR, textStatus, errorThrown) {
+      var errorMessage = 'Error response. Status code : ' + jqXHR.status + '. Resopnse : ' + jqXHR.responseText;
+      $('#errorText').text(errorMessage);
     });
-  });  
 }
