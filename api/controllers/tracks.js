@@ -15,29 +15,35 @@ module.exports = {
     getTracksForLetter: getTracksForLetter
 };
 
-function getAllTracks(req, resp) {
+function getAllTracks(req, resp, next) {
     var query = {
         recordType: 'jukeboxEntry'
     };
     var projections = { _id: 0, recordType: 0, selectionLetter: 0, selectionNumber: 0 };
     jukeboxDB.find(query, projections, function (err, docs) {
+        if (err) {
+            return next(err);
+        }
         resp.send(docs);
     });
 }
 
-function getTracksForLetter(req, resp) {
+function getTracksForLetter(req, resp, next) {
     var query = {
         recordType: 'jukeboxEntry',
         selectionLetter: req.swagger.params.selectionLetter.value
     };
     var projections = { _id: 0, recordType: 0 };
     jukeboxDB.find(query, projections, function (err, docs) {
+        if (err) {
+            return next(err);
+        }
         resp.send(docs);
     });
 }
 
 
-function getTrack(req, resp) {
+function getTrack(req, resp, next) {
     var query = {
         recordType: 'jukeboxEntry',
         selectionLetter: req.swagger.params.selectionLetter.value,
@@ -45,12 +51,15 @@ function getTrack(req, resp) {
     };
     var projections = { _id: 0, recordType: 0, selectionLetter: 0, selectionNumber: 0 };
     jukeboxDB.findOne(query, projections, function (err, docs) {
+        if (err) {
+            return next(err);
+        }
         resp.send(docs);
     });
 }
 
 
-function updateTrack(req, resp) {
+function updateTrack(req, resp, next) {
     var body = req.swagger.params.body.value;
     var insertDoc = {
         recordType: "jukeboxEntry",
@@ -64,6 +73,9 @@ function updateTrack(req, resp) {
         selectionNumber: req.swagger.params.selectionNumber.value
     };
     jukeboxDB.update(query, { $set: insertDoc }, function (err, numReplaced) {
+        if (err) {
+            return next(err);
+        }
         resp.send(insertDoc);
         // Callback is optional
         // newDoc is the newly inserted document, including its _id
@@ -71,8 +83,9 @@ function updateTrack(req, resp) {
     });
 }
 
-function insertTrack(req, resp) {
+function insertTrack(req, resp, next) {
     var body = req.swagger.params.body.value;
+    body.metadata = decodeURI(body.metadata);
     var insertDoc = {
         recordType: "jukeboxEntry",
         selectionLetter: req.swagger.params.selectionLetter.value,
@@ -85,6 +98,9 @@ function insertTrack(req, resp) {
         selectionNumber: req.swagger.params.selectionNumber.value
     };
     jukeboxDB.update(query, insertDoc , { upsert: true }, function (err, numReplaced, upsert) {
+        if (err) {
+            return next(err);
+        }
         resp.send(insertDoc);
         // Callback is optional
         // newDoc is the newly inserted document, including its _id
@@ -92,7 +108,7 @@ function insertTrack(req, resp) {
     });
 }
 
-function playTrack(req, resp) {
+function playTrack(req, resp, next) {
     var sonosIP;
     var uri;
     var metadata;
@@ -120,15 +136,18 @@ function playTrack(req, resp) {
         }
     ], function(err) {
         if (err) {
-            resp.send(err);
-            return;
+            return next(err);
         }
         if (type === 'track') {
             sonosFunctions.queueTrackAndGetCurrentState(sonosIP, uri, metadata, function(err, data){
-                if (err) return resp.send(err);
+                if (err) {
+                    return next(err);
+                }
                 if (data.playingState !== 'playing' || data.playing.substring(0, 14) !== 'x-rincon-queue' ) {
                     sonosFunctions.startPlayingTrackNow(sonosIP, data.queuedTrackNumber, function (err, data) {
-                        if (err) return resp.send(err);
+                        if (err) {
+                            return next(err);
+                        }
                         resp.send(data);
                     });
                 } else {
@@ -138,7 +157,9 @@ function playTrack(req, resp) {
         } else {
             // this is the bit where it is not a track
             sonosFunctions.startPlayingStream(sonosIP, uri, metadata, function (err, data) {
-                if (err) return resp.send(err);
+                if (err) {
+                    return next(err);
+                }
                 resp.send(data);
             });
         }

@@ -10,7 +10,7 @@ module.exports = {
     getFavourites: getFavourites
 };
 
-function getFavourites(req, resp) {
+function getFavourites(req, resp, next) {
     var query = {
         recordType: 'settings',
         setting: 'sonos'
@@ -34,13 +34,16 @@ function getFavourites(req, resp) {
 }
 
 
-function searchSonos(req, resp) {
+function searchSonos(req, resp, next) {
     var query = {
         recordType: 'settings',
         setting: 'sonos'
     };
     var projections = { _id: 0, type: 0 };
     jukeboxDB.findOne(query, projections, function (err, docs) {
+        if (err) {
+            return next(err);
+        }
         var sonosIP = docs.value;
         var sonos = new Sonos(sonosIP, 1400);
         var offset = 0;
