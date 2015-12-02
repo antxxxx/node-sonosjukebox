@@ -41,10 +41,10 @@ function searchSpotify(req, resp) {
                     var albumArtURL = item.album.images[0].url;
                     id = id.replace(/:/g, '%3a');
                     //id="x-sonos-spotify:spotify:track:600HVBpzF1WfBdaRwbEvLz?sid=9&flags=0";
-                    var uri = 'x-sonos-spotify%3Aspotify%3Atrack%3A' + id + '?sid=9&flags=0';
+                    var uri = 'x-sonos-spotify:spotify%3Atrack%3A' + id;
                     albumId = albumId.replace(/:/g, '%3a');
                     var didl = '<DIDL-Lite xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:upnp="urn:schemas-upnp-org:metadata-1-0/upnp/" xmlns:r="urn:schemas-rinconnetworks-com:metadata-1-0/" xmlns="urn:schemas-upnp-org:metadata-1-0/DIDL-Lite/">' +
-                        '<item id="00030000' + id + '" parentID="00030000' + albumId + '" restricted="true">' +
+                        '<item id="00032020spotify%3atrack%3a' + id + '" parentID="00030000spotify%3aalbum%3a' + albumId + '" restricted="true">' +
                         '<dc:title>' + title + '</dc:title>' +
                         '<upnp:class>object.item.audioItem.musicTrack</upnp:class>' +
                         '<desc id="cdudn" nameSpace="urn:schemas-rinconnetworks-com:metadata-1-0/">SA_RINCON2311_X_#Svc2311-0-Token</desc>' +
