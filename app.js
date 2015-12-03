@@ -8,6 +8,8 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var serverPort = 3000;
+var debug = require('debug')('main');
+var util = require('util');
 
 // swaggerRouter configuration
 var options = {
@@ -57,7 +59,7 @@ swaggerTools.initializeMiddleware(swaggerDoc, function (middleware) {
         
     // Start the server
     http.createServer(app).listen(serverPort, function () {
-        console.log('Your server is listening on port %d (http://localhost:%d)', serverPort, serverPort);
+        debug('Your server is listening on port %d (http://localhost:%d)', serverPort, serverPort);
     });
 });
 
@@ -65,6 +67,8 @@ function errorHandler(err, req, res) {
     /*jshint maxcomplexity:7 */
     var myError;
     var status;
+    debug("error encountered");
+    debug(util.inspect(err, false, null));
     var isReturnFullError = res.statusCode === 400 || res.statusCode === 401 || res.statusCode === 403;
     
     var isInvalidKeyForResource = err.code === 'oauth.v2.InvalidApiKeyForGivenResource' || err.code === 'keymanagement.service.apiresource_doesnot_exist';

@@ -1,4 +1,6 @@
 var _ = require('lodash');
+var debug = require('debug')('jukebox-settings');
+var util = require('util');
 
 var db = require('../../helpers/jukeboxDB'),
     jukeboxDB = db.jukeboxDB;
@@ -10,6 +12,8 @@ module.exports = {
 };
 
 function getAllSettings(req, resp) {
+    debug(util.inspect(_.pick(req, ['headers', 'method', 'url', 'query', 'params']), false, null));
+
     var query = {
         recordType: 'settings'
     };
@@ -22,6 +26,7 @@ function getAllSettings(req, resp) {
 
 
 function getSetting(req, resp, next) {
+    debug(util.inspect(_.pick(req, ['headers', 'method', 'url', 'query', 'params']), false, null));
     var query = {
         recordType: 'settings',
         setting: req.swagger.params.setting.value
@@ -44,6 +49,8 @@ function getSetting(req, resp, next) {
 
 
 function updateSetting(req, resp, next) {
+    debug(util.inspect(_.pick(req, ['headers', 'method', 'url', 'query', 'params']), false, null));
+    debug(util.inspect( req.swagger.params.body.value, false, null));
     var body = req.swagger.params.body.value;
     var insertDoc = {
         recordType: "settings",

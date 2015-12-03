@@ -1,6 +1,8 @@
 var _ = require('lodash');
 var Sonos = require('sonos').Sonos;
 var sonosFunctions = require('../../helpers/sonosFunctions');
+var debug = require('debug')('jukebox-sonos');
+var util = require('util');
 
 var db = require('../../helpers/jukeboxDB'),
     jukeboxDB = db.jukeboxDB;
@@ -11,6 +13,7 @@ module.exports = {
 };
 
 function getFavourites(req, resp, next) {
+    debug(util.inspect(_.pick(req, ['headers', 'method', 'url', 'query', 'params']), false, null));
     var query = {
         recordType: 'settings',
         setting: 'sonos'
@@ -63,6 +66,7 @@ function tidyArray(items){
     return newItems;
 }
 function searchSonos(req, resp, next) {
+    debug(util.inspect(_.pick(req, ['headers', 'method', 'url', 'query', 'params']), false, null));
     var query = {
         recordType: 'settings',
         setting: 'sonos'
@@ -72,7 +76,7 @@ function searchSonos(req, resp, next) {
         if (err) {
             return next(err);
         }
-        if (_.isUndefined(docs.value)) {
+        if (docs===null) {
                 var response = {
                     "returned": 0,
                     "total": 0,
