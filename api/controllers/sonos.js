@@ -17,15 +17,23 @@ function getFavourites(req, resp, next) {
     };
     var projections = { _id: 0, type: 0 };
     jukeboxDB.findOne(query, projections, function (err, docs) {
-        var sonosIP = docs.value;
-        sonosFunctions.getFavourites(sonosIP, function (err, data) {
-            if (err) {
+        if (err) {
+            next(err);
+            return;
+        }
+        if (docs === null) {
                 var response = {
                     "returned": 0,
                     "total": 0,
                     "items": []
                 };
                 resp.send(response);
+                return;
+        }
+        var sonosIP = docs.value;
+        sonosFunctions.getFavourites(sonosIP, function (err, data) {
+            if (err) {
+                next(err);
             } else {
                 var newResponse = {
                     returned: data.returned,
@@ -63,6 +71,15 @@ function searchSonos(req, resp, next) {
     jukeboxDB.findOne(query, projections, function (err, docs) {
         if (err) {
             return next(err);
+        }
+        if (_.isUndefined(docs.value)) {
+                var response = {
+                    "returned": 0,
+                    "total": 0,
+                    "items": []
+                };
+                resp.send(response);
+                return;
         }
         var sonosIP = docs.value;
         var sonos = new Sonos(sonosIP, 1400);

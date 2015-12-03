@@ -31,6 +31,13 @@ function getSetting(req, resp, next) {
         if (err) {
             return next(err);
         }
+        if (docs === null) {
+            var response = {
+                message: "cant find setting"
+            };
+            resp.status(404).send(response);
+            return;
+        }
         resp.send(docs);
     });
 }

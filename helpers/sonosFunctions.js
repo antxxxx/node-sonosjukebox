@@ -24,6 +24,14 @@ function getSonosIP(callback) {
 	var projections = { _id: 0, recordType: 0 };
 	jukeboxDB.findOne(query, projections, function (err, docs) {
 		if (err) return callback(err);
+		if (docs === null) {
+			var response = {
+				"message": "no sonos setup"
+			};
+			callback(response);
+			return;
+		}
+
 		var sonosIP = docs.value;
 		callback(null, sonosIP);
 	});
