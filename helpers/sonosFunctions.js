@@ -161,7 +161,8 @@ function startPlayingTrackNow(sonosIP, queuedTrackNumber, callback) {
 	async.series([
 		function (callback) {
 			sonos.pause(function (err, data) {
-				callback(err);
+				// dont worry if the call to pause fails - its probably because it is already paused
+				callback(null);
 			});
 		},
 		function (callback) {
