@@ -46,6 +46,13 @@ function getTrackDetails(selectionLetter, selectionNumber, callback) {
 	var projections = { _id: 0, recordType: 0, selectionLetter: 0, selectionNumber: 0 };
 	jukeboxDB.findOne(query, projections, function (err, docs) {
 		if (err) return callback(err);
+		if (docs === null) {
+			var response = {
+				"message": "cant find track"
+			};
+			callback(response);
+			return;
+		}
 		var uri = docs.uri;
 		var metaData = docs.metaData;
 		var type = docs.type;
