@@ -13,6 +13,7 @@ schemes:
 # format of bodies a client can send (Content-Type)
 consumes:
   - application/json
+  - application/octet-stream
 # format of the responses to the client (Accepts)
 produces:
   - application/json
