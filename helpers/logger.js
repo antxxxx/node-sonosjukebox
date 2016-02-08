@@ -14,7 +14,7 @@ var logger = new winston.Logger({
 	    level: 'debug',
 	    inputToken: process.env.LOGGLY_TOKEN,
 	    subdomain: "foundit",
-	    tags: ["Winston-NodeJS"],
+	    tags: ["node-sonoswebserver", "node"],
 	    json:true
 	})
     ],
