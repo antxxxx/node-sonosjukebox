@@ -3,6 +3,8 @@ var Sonos = require('sonos').Sonos;
 var sonosFunctions = require('../../helpers/sonosFunctions');
 var debug = require('debug')('jukebox-sonos');
 var util = require('util');
+var winston  = require('../../helpers/logger');
+
 
 var db = require('../../helpers/jukeboxDB'),
     jukeboxDB = db.jukeboxDB;
@@ -13,7 +15,7 @@ module.exports = {
 };
 
 function getFavourites(req, resp, next) {
-    debug(util.inspect(_.pick(req, ['headers', 'method', 'url', 'query', 'params']), false, null));
+    winston.debug(util.inspect(_.pick(req, ['headers', 'method', 'url', 'query', 'params']), false, null));
     var query = {
         recordType: 'settings',
         setting: 'sonos'
@@ -66,7 +68,7 @@ function tidyArray(items){
     return newItems;
 }
 function searchSonos(req, resp, next) {
-    debug(util.inspect(_.pick(req, ['headers', 'method', 'url', 'query', 'params']), false, null));
+    winston.debug(util.inspect(_.pick(req, ['headers', 'method', 'url', 'query', 'params']), false, null));
     var query = {
         recordType: 'settings',
         setting: 'sonos'

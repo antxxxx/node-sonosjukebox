@@ -4,6 +4,8 @@ var async = require("async");
 var sonosFunctions = require('../../helpers/sonosFunctions');
 var debug = require('debug')('jukebox-tracks');
 var util = require('util');
+var winston  = require('../../helpers/logger');
+
 
 var db = require('../../helpers/jukeboxDB'),
     jukeboxDB = db.jukeboxDB;
@@ -18,7 +20,7 @@ module.exports = {
 };
 
 function getAllTracks(req, resp, next) {
-    debug(util.inspect(_.pick(req, ['headers', 'method', 'url', 'query', 'params']), false, null));
+    winston.debug(util.inspect(_.pick(req, ['headers', 'method', 'url', 'query', 'params']), false, null));
     var query = {
         recordType: 'jukeboxEntry'
     };
@@ -32,7 +34,7 @@ function getAllTracks(req, resp, next) {
 }
 
 function getTracksForLetter(req, resp, next) {
-    debug(util.inspect(_.pick(req, ['headers', 'method', 'url', 'query', 'params']), false, null));
+    winston.debug(util.inspect(_.pick(req, ['headers', 'method', 'url', 'query', 'params']), false, null));
     var query = {
         recordType: 'jukeboxEntry',
         selectionLetter: req.swagger.params.selectionLetter.value
@@ -48,7 +50,7 @@ function getTracksForLetter(req, resp, next) {
 
 
 function getTrack(req, resp, next) {
-    debug(util.inspect(_.pick(req, ['headers', 'method', 'url', 'query', 'params']), false, null));
+    winston.debug(util.inspect(_.pick(req, ['headers', 'method', 'url', 'query', 'params']), false, null));
     var query = {
         recordType: 'jukeboxEntry',
         selectionLetter: req.swagger.params.selectionLetter.value,
@@ -72,8 +74,8 @@ function getTrack(req, resp, next) {
 
 
 function updateTrack(req, resp, next) {
-    debug(util.inspect(_.pick(req, ['headers', 'method', 'url', 'query', 'params']), false, null));
-    debug(util.inspect( req.swagger.params.body.value, false, null));
+    winston.debug(util.inspect(_.pick(req, ['headers', 'method', 'url', 'query', 'params']), false, null));
+    winston.debug(util.inspect( req.swagger.params.body.value, false, null));
     var body = req.swagger.params.body.value;
     var insertDoc = {
         recordType: "jukeboxEntry",
@@ -98,8 +100,8 @@ function updateTrack(req, resp, next) {
 }
 
 function insertTrack(req, resp, next) {
-    debug(util.inspect(_.pick(req, ['headers', 'method', 'url', 'query', 'params']), false, null));
-    debug(util.inspect( req.swagger.params.body.value, false, null));
+    winston.debug(util.inspect(_.pick(req, ['headers', 'method', 'url', 'query', 'params']), false, null));
+    winston.debug(util.inspect( req.swagger.params.body.value, false, null));
     var body = req.swagger.params.body.value;
     body.metaData = decodeURI(body.metaData);
     var insertDoc = {
@@ -125,7 +127,7 @@ function insertTrack(req, resp, next) {
 }
 
 function playTrack(req, resp, next) {
-    debug(util.inspect(_.pick(req, ['headers', 'method', 'url', 'query', 'params']), false, null));
+    winston.debug(util.inspect(_.pick(req, ['headers', 'method', 'url', 'query', 'params']), false, null));
     var sonosIP;
     var uri;
     var metaData;

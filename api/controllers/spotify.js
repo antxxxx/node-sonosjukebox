@@ -2,6 +2,8 @@ var _ = require('lodash');
 var SpotifyWebApi = require('spotify-web-api-node');
 var debug = require('debug')('jukebox-spotify');
 var util = require('util');
+var winston  = require('../../helpers/logger');
+
 
 var db = require('../../helpers/jukeboxDB'),
     jukeboxDB = db.jukeboxDB;
@@ -11,7 +13,7 @@ module.exports = {
 };
 
 function searchSpotify(req, resp) {
-    debug(util.inspect(_.pick(req, ['headers', 'method', 'url', 'query', 'params']), false, null));
+    winston.debug(util.inspect(_.pick(req, ['headers', 'method', 'url', 'query', 'params']), false, null));
     var spotifyApi = new SpotifyWebApi();
     var offset = 0;
     if ( typeof req.swagger.params.start.value !== 'undefined'  ) {
